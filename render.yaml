@@ -33,8 +33,6 @@ services:
   - type: web
     name: hackmate-frontend
     runtime: static
-    plan: free
-    region: oregon
     rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
