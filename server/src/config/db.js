@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 import dns from 'dns';
 
-// Configure reliable DNS servers for MongoDB Atlas SRV resolution
-try {
-  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
-} catch (e) {
-  // Ignore if not permitted
+// Only set custom DNS fallback on Windows (Render Linux containers use system resolv.conf)
+if (process.platform === 'win32') {
+  try {
+    dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+  } catch (e) {
+    // Ignore if not permitted
+  }
 }
 
 export const connectDB = async () => {
@@ -13,15 +15,12 @@ export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(uri, {
       autoIndex: true,
-      serverSelectionTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 10000,
     });
     console.log(`[Database] MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
     console.error(`[Database Error] Connection failed: ${error.message}`);
-    if (process.env.NODE_ENV === 'production') {
-      process.exit(1);
-    }
     throw error;
   }
 };

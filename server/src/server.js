@@ -12,20 +12,14 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // 1. Connect Database
-    await connectDB();
-
-    // 2. Create HTTP Server
+    // 1. Create HTTP Server
     const httpServer = http.createServer(app);
 
-    // 3. Initialize Socket.IO
+    // 2. Initialize Socket.IO
     initSocket(httpServer);
 
-    // 4. Start background jobs
-    startDeadlineCron();
-
-    // 5. Listen
-    httpServer.listen(PORT, () => {
+    // 3. Listen immediately on 0.0.0.0 so Render detects port binding and health check passes instantly
+    httpServer.listen(PORT, '0.0.0.0', () => {
       console.log(`===============================================`);
       console.log(`🚀 HackMate Server running on port ${PORT}`);
       console.log(`📡 Real-time Socket.IO active`);
@@ -34,6 +28,15 @@ const startServer = async () => {
       console.log(`📚 API Docs: http://localhost:${PORT}/api/v1/docs`);
       console.log(`===============================================`);
     });
+
+    // 4. Connect Database & initialize jobs
+    connectDB()
+      .then(() => {
+        startDeadlineCron();
+      })
+      .catch((err) => {
+        console.error(`[Database Warning] Initial connection delayed: ${err.message}`);
+      });
 
     // Graceful shutdown
     const shutdown = () => {

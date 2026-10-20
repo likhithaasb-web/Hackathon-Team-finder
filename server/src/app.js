@@ -75,11 +75,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static uploads folder
 app.use('/uploads', express.static(path.resolve('uploads')));
 
-// Apply general API rate limiting to /api/v1
-app.use('/api/v1', apiLimiter);
-
-// Health check endpoint
-app.get('/api/v1/health', (req, res) => {
+// Health check endpoints (placed before rate limiter so Render probes never get throttled)
+app.get(['/health', '/api/v1/health'], (req, res) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -88,6 +85,9 @@ app.get('/api/v1/health', (req, res) => {
     service: 'HackMate API',
   });
 });
+
+// Apply general API rate limiting to /api/v1
+app.use('/api/v1', apiLimiter);
 
 // Interactive API Documentation endpoint
 app.get('/api/v1/docs', (req, res) => {
