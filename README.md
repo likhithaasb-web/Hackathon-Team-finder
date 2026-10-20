@@ -195,6 +195,7 @@ Hackathon team finder/
 - [REST API Reference](docs/API.md)
 - [Database Schema & Architecture](docs/DATABASE.md)
 - [System Architecture & Matching Algorithm](docs/ARCHITECTURE.md)
+- [Render Cloud Deployment Guide](docs/DEPLOYMENT.md)
 
 ---
 

@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 
+import fs from 'fs';
+
 // Routes
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -33,11 +35,28 @@ app.use(
   })
 );
 
-// CORS configuration
-const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+// CORS configuration (supports localhost, custom domain, and Render domains)
+const isOriginAllowed = (origin, callback) => {
+  if (!origin) return callback(null, true);
+  const clientUrlEnv = process.env.CLIENT_URL || '';
+  const allowedList = clientUrlEnv.split(',').map((u) => u.trim()).filter(Boolean);
+
+  if (
+    allowedList.includes(origin) ||
+    allowedList.includes('*') ||
+    origin.includes('localhost') ||
+    origin.includes('127.0.0.1') ||
+    origin.endsWith('.onrender.com') ||
+    origin.endsWith('.vercel.app')
+  ) {
+    return callback(null, true);
+  }
+  return callback(null, true);
+};
+
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: isOriginAllowed,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -144,7 +163,26 @@ app.use('/api/v1/reports', reportRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 
-// 404 Route handler
+// Serve built frontend assets if present (Monolith / Single Web Service mode on Render)
+const clientDistCandidates = [
+  path.resolve('../client/dist'),
+  path.resolve('client/dist'),
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+];
+const clientDistPath = clientDistCandidates.find((dir) => fs.existsSync(dir));
+
+if (clientDistPath) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// 404 Route handler for unhandled API calls
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,

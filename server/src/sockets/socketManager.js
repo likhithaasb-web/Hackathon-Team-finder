@@ -8,11 +8,27 @@ let ioInstance = null;
 const onlineUsers = new Map(); // userId -> Set of socket IDs
 
 export const initSocket = (httpServer) => {
-  const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+  const isOriginAllowed = (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const clientUrlEnv = process.env.CLIENT_URL || '';
+    const allowedList = clientUrlEnv.split(',').map((u) => u.trim()).filter(Boolean);
+
+    if (
+      allowedList.includes(origin) ||
+      allowedList.includes('*') ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.endsWith('.onrender.com') ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  };
 
   ioInstance = new Server(httpServer, {
     cors: {
-      origin: allowedOrigin,
+      origin: isOriginAllowed,
       methods: ['GET', 'POST'],
       credentials: true,
     },
