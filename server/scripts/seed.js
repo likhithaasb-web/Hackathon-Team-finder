@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {}
+
 import User from '../src/models/User.js';
 import Hackathon from '../src/models/Hackathon.js';
 import Team from '../src/models/Team.js';
