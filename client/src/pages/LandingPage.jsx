@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext.jsx';
+import LoginModal from '../components/LoginModal.jsx';
 import {
   Users,
   Sparkles,
@@ -20,9 +22,21 @@ import {
 import apiClient from '../api/client.js';
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [featuredHackathons, setFeaturedHackathons] = useState([]);
   const [featuredTeams, setFeaturedTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleFindMyTeam = (e) => {
+    if (e) e.preventDefault();
+    if (isAuthenticated) {
+      navigate('/discover');
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   useEffect(() => {
     const loadFeaturedData = async () => {
@@ -88,14 +102,15 @@ export default function LandingPage() {
           transition={{ delay: 0.3 }}
           className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Link
-            to="/discover"
+          <button
+            type="button"
+            onClick={handleFindMyTeam}
             className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-brand-700 hover:bg-brand-800 shadow-royal hover:shadow-glow-lg transition-all"
           >
             <Users className="w-4 h-4" />
             <span>Find My Team</span>
             <ArrowRight className="w-4 h-4 ml-1" />
-          </Link>
+          </button>
           <Link
             to="/hackathons"
             className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-beige-900 dark:text-dark-beige bg-white dark:bg-dark-card border border-beige-300 dark:border-dark-border hover:bg-beige-100 dark:hover:bg-dark-cardHover transition-all shadow-sm"
@@ -529,14 +544,22 @@ export default function LandingPage() {
           >
             Create Free Account
           </Link>
-          <Link
-            to="/discover"
+          <button
+            type="button"
+            onClick={handleFindMyTeam}
             className="px-6 py-3.5 rounded-xl font-bold text-sm bg-brand-900/60 hover:bg-brand-900 text-white border border-beige-200/30 transition-all"
           >
             Browse Available Teammates
-          </Link>
+          </button>
         </div>
       </section>
+
+      {/* Pop-up Login Modal when clicking Find My Team */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        redirectPath="/discover"
+      />
     </div>
   );
 }
