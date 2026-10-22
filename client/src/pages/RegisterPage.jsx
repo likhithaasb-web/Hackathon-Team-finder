@@ -102,7 +102,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-xl">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-glow mb-3">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-brand-800 to-brand-600 flex items-center justify-center text-white shadow-royal mb-3">
             <Sparkles className="w-6 h-6" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -119,9 +119,9 @@ export default function RegisterPage() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                     step === s
-                      ? 'bg-brand-600 text-white shadow-glow'
+                      ? 'bg-brand-700 text-white shadow-royal'
                       : step > s
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-emerald-600 text-white'
                       : 'bg-gray-200 dark:bg-dark-card text-gray-500'
                   }`}
                 >
@@ -221,7 +221,7 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                className="w-full mt-4 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-600 hover:bg-brand-700 shadow-glow transition-all"
+                className="w-full mt-4 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
               >
                 <span>Continue to Profile Setup</span>
                 <ArrowRight className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function RegisterPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-600 hover:bg-brand-700 shadow-glow transition-all"
+                  className="flex-1 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
                 >
                   <span>Next: Skills & Preferences</span>
                   <ArrowRight className="w-4 h-4" />
@@ -368,8 +368,8 @@ export default function RegisterPage() {
                         onClick={() => toggleArrayItem('preferredRoles', role)}
                         className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                           isSelected
-                            ? 'bg-indigo-600 text-white shadow-sm'
-                            : 'bg-gray-100 dark:bg-dark-card text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                            ? 'bg-brand-700 text-white shadow-royal'
+                            : 'bg-beige-100 dark:bg-dark-card text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-beige-200 dark:border-dark-border'
                         }`}
                       >
                         {role} {isSelected ? '✓' : ''}
@@ -459,7 +459,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-600 hover:bg-brand-700 disabled:opacity-50 shadow-glow transition-all"
+                  className="flex-1 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-700 hover:bg-brand-800 disabled:opacity-50 shadow-royal transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{submitting ? 'Creating Profile...' : 'Complete & Launch HackMate'}</span>
@@ -471,7 +471,7 @@ export default function RegisterPage() {
           <div className="mt-6 pt-4 border-t border-gray-100 dark:border-dark-border text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Already registered?{' '}
-              <Link to="/login" className="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+              <Link to="/login" className="font-semibold text-brand-700 dark:text-brand-400 hover:underline">
                 Sign in here
               </Link>
             </p>

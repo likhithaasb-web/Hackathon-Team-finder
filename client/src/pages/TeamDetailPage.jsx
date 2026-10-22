@@ -214,7 +214,7 @@ export default function TeamDetailPage() {
       <div className="p-6 sm:p-8 rounded-3xl glass-card border border-gray-200 dark:border-dark-border shadow-xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-glow text-2xl font-black shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-800 to-brand-600 flex items-center justify-center text-white shadow-royal text-2xl font-black shrink-0">
               {team.name.charAt(0)}
             </div>
             <div>
@@ -334,9 +334,9 @@ export default function TeamDetailPage() {
 
       {/* Leader Review Box: Incoming Applications */}
       {isLeader && applications.length > 0 && (
-        <div className="p-6 rounded-2xl glass-card border border-purple-200 dark:border-purple-800/80 bg-purple-50/20 dark:bg-purple-950/20 space-y-4">
+        <div className="p-6 rounded-2xl glass-card border border-beige-300 dark:border-brand-900/60 bg-beige-100/60 dark:bg-brand-950/30 space-y-4">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center space-x-2">
-            <Users className="w-4 h-4 text-purple-600" />
+            <Users className="w-4 h-4 text-brand-700" />
             <span>Pending Team Applications ({applications.length})</span>
           </h3>
 

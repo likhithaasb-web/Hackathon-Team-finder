@@ -92,7 +92,7 @@ export default function HackathonsPage() {
         </div>
         <Link
           to="/teams/create"
-          className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-glow self-start sm:self-auto"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal self-start sm:self-auto transition-all"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Create Team for Hackathon</span>
@@ -108,11 +108,11 @@ export default function HackathonsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by hackathon name, themes (AI, Web3, Climate), location, or organizer..."
-            className="w-full pl-10 pr-24 py-2.5 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-24 py-2.5 bg-beige-50/70 dark:bg-dark-surface border border-beige-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-600"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg text-xs font-semibold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
           >
             Search
           </button>
@@ -126,7 +126,7 @@ export default function HackathonsPage() {
             <select
               value={format}
               onChange={(e) => setFormat(e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg text-gray-900 dark:text-white"
+              className="w-full px-2.5 py-1.5 bg-beige-50/50 dark:bg-dark-surface border border-beige-300 dark:border-dark-border rounded-lg text-gray-900 dark:text-white"
             >
               {FORMATS.map((f) => (
                 <option key={f} value={f === 'All Formats' ? 'all' : f}>
@@ -265,20 +265,20 @@ export default function HackathonsPage() {
                   </div>
                 </div>
 
-                <div className="px-5 py-3.5 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-card/50 flex items-center justify-between">
+                <div className="px-5 py-3.5 border-t border-gray-100 dark:border-dark-border bg-beige-50/60 dark:bg-dark-card/50 flex items-center justify-between">
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     Reg deadline: <strong>{new Date(h.registrationDeadline).toLocaleDateString()}</strong>
                   </span>
                   <div className="flex items-center space-x-2">
                     <Link
                       to={`/hackathons/${h._id}`}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950/40 transition-colors"
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-700 dark:text-brand-300 hover:bg-beige-100 dark:hover:bg-brand-950/40 transition-colors"
                     >
                       View Details
                     </Link>
                     <Link
                       to={`/teams/create?hackathonId=${h._id}`}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-sm transition-colors"
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
                     >
                       Create Team
                     </Link>

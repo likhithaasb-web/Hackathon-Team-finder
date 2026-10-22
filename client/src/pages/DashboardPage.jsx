@@ -81,39 +81,43 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* 1. Welcome Header Banner & Profile Completion */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 text-white shadow-glow relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 text-white shadow-royal border border-brand-700/40 relative overflow-hidden">
+        {/* Glow ambient background circles with Royal Blue and warm Beige */}
+        <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-500/20 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute -bottom-12 left-1/3 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full pointer-events-none" />
+
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-md mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-beige-100/20 text-beige-100 border border-beige-200/30 backdrop-blur-md mb-2 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Ready for the next hackathon</span>
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Welcome back, {user?.fullName}! 👋
             </h1>
-            <p className="text-xs sm:text-sm text-brand-100 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-beige-200/90 mt-1 max-w-xl">
               {user?.roleTitle} • {user?.college || user?.location || 'HackMate Innovator'}
             </p>
           </div>
 
           {/* Profile Completeness Box */}
-          <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 min-w-[240px]">
+          <div className="p-4 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15 min-w-[240px]">
             <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-medium text-brand-100">Profile Completeness</span>
+              <span className="font-medium text-beige-200">Profile Completeness</span>
               <span className="font-bold text-white text-sm">
                 {user?.profileCompleteness || 60}%
               </span>
             </div>
-            <div className="w-full bg-black/20 h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-black/30 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-emerald-400 h-2 rounded-full transition-all duration-500"
+                className="bg-amber-400 h-2 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${user?.profileCompleteness || 60}%` }}
               />
             </div>
             {user?.profileCompleteness < 100 && (
               <Link
                 to="/profile/edit"
-                className="text-[11px] text-white/90 hover:underline block mt-2 text-right font-medium"
+                className="text-[11px] text-beige-200 hover:text-white hover:underline block mt-2 text-right font-medium"
               >
                 Add projects & skills to reach 100% →
               </Link>
@@ -125,23 +129,23 @@ export default function DashboardPage() {
         <div className="mt-6 pt-6 border-t border-white/15 flex flex-wrap gap-2.5">
           <Link
             to="/discover"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-white text-brand-700 hover:bg-gray-100 transition-colors shadow-sm"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-beige-50 text-brand-900 hover:bg-white transition-colors shadow-sm"
           >
-            <Users className="w-3.5 h-3.5" />
+            <Users className="w-3.5 h-3.5 text-brand-700" />
             <span>Discover Teammates</span>
           </Link>
           <Link
             to="/teams/create"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-800/80 hover:bg-brand-800 text-white border border-white/20 transition-colors"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-950/60 hover:bg-brand-950 text-white border border-beige-200/20 transition-colors"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
+            <PlusCircle className="w-3.5 h-3.5 text-beige-300" />
             <span>Create New Team</span>
           </Link>
           <Link
             to="/hackathons"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-800/80 hover:bg-brand-800 text-white border border-white/20 transition-colors"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-950/60 hover:bg-brand-950 text-white border border-beige-200/20 transition-colors"
           >
-            <Calendar className="w-3.5 h-3.5" />
+            <Calendar className="w-3.5 h-3.5 text-beige-300" />
             <span>Explore Hackathons</span>
           </Link>
         </div>
@@ -151,9 +155,9 @@ export default function DashboardPage() {
       {(invitations.length > 0 || incomingRequests.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {invitations.length > 0 && (
-            <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-beige-100/80 dark:bg-brand-950/40 border border-beige-300 dark:border-brand-800/60 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-royal">
                   <FolderGit2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -167,7 +171,7 @@ export default function DashboardPage() {
               </div>
               <Link
                 to="/teams/my-teams"
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 hover:bg-purple-200 transition-colors"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-brand-900 dark:text-brand-200 bg-white dark:bg-dark-surface border border-beige-300 dark:border-brand-800 hover:bg-beige-50 transition-colors shadow-sm"
               >
                 View Invites
               </Link>

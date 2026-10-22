@@ -8,7 +8,7 @@
   }
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars with Royal Blue & Beige accents */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -19,22 +19,38 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors;
+  @apply bg-beige-300 dark:bg-dark-border rounded-full hover:bg-brand-400 dark:hover:bg-brand-600 transition-colors;
 }
 
-/* Glassmorphism subtle background */
+/* Glassmorphism with warm Beige & Royal Blue */
 .glass-panel {
-  @apply bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border border-gray-200/80 dark:border-dark-border/80;
+  @apply bg-white/85 dark:bg-dark-surface/85 backdrop-blur-md border border-beige-200/90 dark:border-dark-border/80 shadow-sm;
 }
 
 .glass-card {
-  @apply bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md transition-all duration-200;
+  @apply bg-white dark:bg-dark-card border border-beige-200/90 dark:border-dark-border shadow-sm hover:shadow-royal transition-all duration-200;
+}
+
+.glass-beige {
+  @apply bg-beige-100/70 dark:bg-dark-surface/60 border border-beige-200 dark:border-dark-border backdrop-blur-sm;
 }
 
 .gradient-text {
-  @apply bg-gradient-to-r from-brand-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-brand-600 via-brand-500 to-blue-500 bg-clip-text text-transparent;
+}
+
+.gradient-royal {
+  @apply bg-gradient-to-r from-brand-900 via-brand-700 to-brand-600;
 }
 
 .badge-skill {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800/60;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-beige-100/90 text-brand-800 dark:bg-brand-950/70 dark:text-brand-300 border border-beige-300/80 dark:border-brand-800/60;
+}
+
+.badge-royal {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800/60;
+}
+
+.badge-beige {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-beige-100 text-beige-800 dark:bg-dark-card dark:text-dark-beige border border-beige-300/90 dark:border-dark-border;
 }

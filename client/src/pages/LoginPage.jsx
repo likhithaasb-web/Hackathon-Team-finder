@@ -36,7 +36,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-glow mb-4">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-brand-800 to-brand-600 flex items-center justify-center text-white shadow-royal mb-4">
             <Sparkles className="w-6 h-6" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -48,49 +48,49 @@ export default function LoginPage() {
         </div>
 
         {/* Demo Accounts Quick-Fill bar */}
-        <div className="p-3.5 rounded-2xl bg-brand-50/70 dark:bg-brand-950/40 border border-brand-200/80 dark:border-brand-800/60 text-xs">
-          <p className="font-semibold text-brand-800 dark:text-brand-300 mb-2 flex items-center space-x-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
+        <div className="p-3.5 rounded-2xl bg-beige-100/80 dark:bg-brand-950/40 border border-beige-300/80 dark:border-brand-800/60 text-xs">
+          <p className="font-bold text-brand-900 dark:text-brand-300 mb-2 flex items-center space-x-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-brand-700" />
             <span>One-Click Demo Accounts (Password: Password@123)</span>
           </p>
           <div className="grid grid-cols-2 gap-1.5">
             <button
               type="button"
               onClick={() => handleQuickLogin('admin@hackmate.dev')}
-              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-brand-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
+              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-beige-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
             >
-              <Shield className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-              <span className="truncate font-medium">Admin (Alex Rivera)</span>
+              <Shield className="w-3.5 h-3.5 text-brand-700 shrink-0" />
+              <span className="truncate font-semibold text-gray-900 dark:text-white">Admin (Alex)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('sophia@hackmate.dev')}
-              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-brand-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
+              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-beige-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
             >
-              <User className="w-3.5 h-3.5 text-pink-500 shrink-0" />
-              <span className="truncate font-medium">UI/UX (Sophia)</span>
+              <User className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span className="truncate font-semibold text-gray-900 dark:text-white">UI/UX (Sophia)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('marcus@hackmate.dev')}
-              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-brand-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
+              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-beige-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
             >
-              <User className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-              <span className="truncate font-medium">Backend (Marcus)</span>
+              <User className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+              <span className="truncate font-semibold text-gray-900 dark:text-white">Backend (Marcus)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('priya@hackmate.dev')}
-              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-brand-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
+              className="p-1.5 rounded-lg bg-white dark:bg-dark-card border border-beige-200 dark:border-brand-800/80 text-left hover:border-brand-500 transition-colors flex items-center space-x-1.5"
             >
-              <User className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-              <span className="truncate font-medium">AI/ML (Priya)</span>
+              <User className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+              <span className="truncate font-semibold text-gray-900 dark:text-white">AI/ML (Priya)</span>
             </button>
           </div>
         </div>
 
         {/* Card */}
-        <div className="p-6 sm:p-8 rounded-2xl glass-card shadow-xl border border-gray-200 dark:border-dark-border">
+        <div className="p-6 sm:p-8 rounded-2xl glass-card shadow-xl border border-beige-200 dark:border-dark-border">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
@@ -104,7 +104,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@stanford.edu"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-beige-50/70 dark:bg-dark-surface border border-beige-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-600"
                 />
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function LoginPage() {
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs text-brand-600 dark:text-brand-400 hover:underline"
+                  className="text-xs text-brand-700 dark:text-brand-400 hover:underline font-medium"
                 >
                   Forgot password?
                 </Link>
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-beige-50/70 dark:bg-dark-surface border border-beige-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-600"
                 />
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full mt-2 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-600 hover:bg-brand-700 disabled:opacity-50 shadow-glow transition-all"
+              className="w-full mt-2 inline-flex items-center justify-center space-x-2 py-3 rounded-xl font-bold text-sm text-white bg-brand-700 hover:bg-brand-800 disabled:opacity-50 shadow-royal transition-all"
             >
               <span>{submitting ? 'Authenticating...' : 'Sign In'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -147,7 +147,7 @@ export default function LoginPage() {
           <div className="mt-6 pt-6 border-t border-gray-100 dark:border-dark-border text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Don’t have an account yet?{' '}
-              <Link to="/register" className="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+              <Link to="/register" className="font-semibold text-brand-700 dark:text-brand-400 hover:underline">
                 Create one now
               </Link>
             </p>

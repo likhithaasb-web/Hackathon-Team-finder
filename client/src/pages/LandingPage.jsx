@@ -43,19 +43,20 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="space-y-24 py-6">
+    <div className="space-y-24 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden text-center max-w-4xl mx-auto pt-8 pb-12 sm:pt-16">
-        {/* Glow ambient background circles */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-brand-500/15 dark:bg-brand-600/20 blur-[100px] -z-10 rounded-full pointer-events-none" />
+      <section className="relative overflow-hidden text-center max-w-4xl mx-auto pt-6 pb-12 sm:pt-14">
+        {/* Glow ambient background circles with Royal Blue and warm Beige */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[320px] bg-brand-600/20 dark:bg-brand-500/20 blur-[110px] -z-10 rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/3 w-[300px] h-[200px] bg-beige-300/30 dark:bg-brand-900/30 blur-[90px] -z-10 rounded-full pointer-events-none" />
 
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-50 dark:bg-brand-950/70 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800/80 mb-6 shadow-sm"
+          className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-beige-100/90 text-brand-800 dark:bg-brand-950/80 dark:text-brand-300 border border-beige-300/90 dark:border-brand-800/80 mb-6 shadow-sm"
         >
-          <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-pulse" />
+          <Sparkles className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 animate-pulse" />
           <span>Intelligent Teammate Discovery & Real-Time Sync</span>
         </motion.div>
 
@@ -75,7 +76,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base sm:text-lg text-beige-800 dark:text-dark-beigeMuted max-w-2xl mx-auto leading-relaxed"
         >
           HackMate is the real-time collaboration hub helping students, developers, designers, and innovators discover upcoming hackathons, match by complementary skills, communicate instantly, and win together.
         </motion.p>
@@ -89,7 +90,7 @@ export default function LandingPage() {
         >
           <Link
             to="/discover"
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-glow hover:shadow-glow-lg transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-brand-700 hover:bg-brand-800 shadow-royal hover:shadow-glow-lg transition-all"
           >
             <Users className="w-4 h-4" />
             <span>Find My Team</span>
@@ -97,9 +98,9 @@ export default function LandingPage() {
           </Link>
           <Link
             to="/hackathons"
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-surface transition-all shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-semibold text-beige-900 dark:text-dark-beige bg-white dark:bg-dark-card border border-beige-300 dark:border-dark-border hover:bg-beige-100 dark:hover:bg-dark-cardHover transition-all shadow-sm"
           >
-            <Trophy className="w-4 h-4 text-brand-500" />
+            <Trophy className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             <span>Explore Hackathons</span>
           </Link>
         </motion.div>
@@ -151,10 +152,10 @@ export default function LandingPage() {
           <div className="p-4 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-beige-100 text-brand-900 border border-beige-300 dark:bg-brand-950/70 dark:text-brand-300 dark:border-brand-800/60 shadow-sm">
                   Sprint Kanban
                 </span>
-                <span className="text-[11px] text-brand-500 font-semibold">2 Spots Open</span>
+                <span className="text-[11px] text-brand-600 dark:text-brand-400 font-bold">2 Spots Open</span>
               </div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                 AgenticLabs 🚀
@@ -277,7 +278,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3. Skill-Based Matching Breakdown */}
-      <section className="max-w-6xl mx-auto rounded-3xl bg-gradient-to-br from-brand-900 via-indigo-950 to-dark-bg p-8 sm:p-14 text-white shadow-2xl relative overflow-hidden">
+      <section className="max-w-6xl mx-auto rounded-3xl bg-gradient-to-br from-brand-950 via-brand-900 to-dark-bg p-8 sm:p-14 text-white shadow-royal border border-beige-300/20 relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 mb-4">
@@ -514,23 +515,23 @@ export default function LandingPage() {
       </section>
 
       {/* 7. Bottom CTA Banner */}
-      <section className="max-w-6xl mx-auto rounded-3xl bg-gradient-to-r from-brand-600 to-indigo-600 p-8 sm:p-12 text-center text-white shadow-glow">
+      <section className="max-w-6xl mx-auto rounded-3xl bg-gradient-to-r from-brand-800 via-brand-700 to-blue-700 p-8 sm:p-14 text-center text-white shadow-royal border border-brand-500/30">
         <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
           Ready to build your next winning project?
         </h2>
-        <p className="text-sm text-brand-100 max-w-xl mx-auto mt-3">
+        <p className="text-sm text-beige-100 max-w-xl mx-auto mt-3">
           Join thousands of developers, designers, and innovators. Create your profile in under 2 minutes.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
           <Link
             to="/register"
-            className="px-6 py-3 rounded-xl font-bold text-sm bg-white text-brand-600 hover:bg-gray-100 shadow-md transition-all"
+            className="px-6 py-3.5 rounded-xl font-bold text-sm bg-beige-50 text-brand-900 hover:bg-white shadow-lg transition-all"
           >
             Create Free Account
           </Link>
           <Link
             to="/discover"
-            className="px-6 py-3 rounded-xl font-bold text-sm bg-brand-700/60 hover:bg-brand-700 text-white border border-white/20 transition-all"
+            className="px-6 py-3.5 rounded-xl font-bold text-sm bg-brand-900/60 hover:bg-brand-900 text-white border border-beige-200/30 transition-all"
           >
             Browse Available Teammates
           </Link>

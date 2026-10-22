@@ -8,33 +8,55 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Royal Blue Palette
         brand: {
-          50: '#EEF2FF',
-          100: '#E0E7FF',
-          200: '#C7D2FE',
-          300: '#A5B4FC',
-          400: '#818CF8',
-          500: '#6366F1',
-          600: '#4F46E5',
-          700: '#4338CA',
-          800: '#3730A3',
-          900: '#312E81',
-          950: '#1E1B4B',
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#3B82F6',
+          500: '#2563EB', // Royal Blue
+          600: '#1D4ED8', // Deep Royal Blue
+          700: '#1E40AF', // Classic Regal Royal Blue
+          800: '#1E3A8A', // Deep Royal Navy
+          900: '#172554', // Midnight Royal
+          950: '#0B1536',
         },
+        // Warm Beige & Sand Palette
+        beige: {
+          50: '#FAF8F5',  // Ivory cream canvas
+          100: '#F5F0E8', // Warm linen surface
+          200: '#EFE7DA', // Soft oatmeal border
+          300: '#E2D6C3', // Warm sand
+          400: '#C9B69B', // Muted camel
+          500: '#B09B7D', // Classic beige
+          600: '#8F795E', // Warm earth
+          700: '#6F5C45',
+          800: '#4E4030',
+          900: '#30271D',
+          950: '#1C160F',
+        },
+        // Royal Midnight Dark Palette
         dark: {
-          bg: '#0B0F19',
-          surface: '#111827',
-          card: '#182234',
-          border: '#243247',
+          bg: '#080D1A',       // Deepest royal midnight canvas
+          surface: '#0F172E',  // Royal surface
+          card: '#152244',     // Elevated royal card
+          cardHover: '#1A2B54',
+          border: '#1E3360',   // Refined royal border
+          borderLight: '#2A447E',
           muted: '#94A3B8',
+          beige: '#F5EFEB',    // Warm beige contrast text
+          beigeMuted: '#D5C8B4',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
-        'glow': '0 0 25px -5px rgba(99, 102, 241, 0.25)',
-        'glow-lg': '0 0 35px -5px rgba(99, 102, 241, 0.35)',
+        'glow': '0 0 25px -4px rgba(37, 99, 235, 0.35)',
+        'glow-lg': '0 0 35px -5px rgba(30, 64, 175, 0.45)',
+        'beige': '0 4px 20px -2px rgba(176, 155, 125, 0.15)',
+        'royal': '0 10px 30px -10px rgba(30, 64, 175, 0.4)',
       },
     },
   },

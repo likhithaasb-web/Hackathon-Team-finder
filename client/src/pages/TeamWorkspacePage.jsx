@@ -180,16 +180,16 @@ export default function TeamWorkspacePage() {
           )}
           <Link
             to="/chat"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-glow transition-all"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Team Chat</span>
           </Link>
           <button
             onClick={() => setTaskModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-brand-900 bg-beige-100 hover:bg-beige-200 border border-beige-300 dark:bg-brand-950/70 dark:text-brand-200 dark:border-brand-800/80 shadow-sm transition-all"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-brand-700 dark:text-brand-300" />
             <span>Add Task</span>
           </button>
         </div>

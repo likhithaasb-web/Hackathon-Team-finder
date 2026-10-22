@@ -89,7 +89,7 @@ export default function TeamsPage() {
 
         <Link
           to="/teams/create"
-          className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-glow self-start sm:self-auto"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal self-start sm:self-auto transition-all"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Create New Team</span>
@@ -102,7 +102,7 @@ export default function TeamsPage() {
           onClick={() => setActiveTab('all')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
             activeTab === 'all'
-              ? 'bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-400 shadow-sm'
+              ? 'bg-beige-100 text-brand-900 dark:bg-brand-950/70 dark:text-brand-300 border border-beige-300 dark:border-brand-800/60 shadow-sm'
               : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
@@ -112,7 +112,7 @@ export default function TeamsPage() {
           onClick={() => setActiveTab('my')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 ${
             activeTab === 'my'
-              ? 'bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-400 shadow-sm'
+              ? 'bg-beige-100 text-brand-900 dark:bg-brand-950/70 dark:text-brand-300 border border-beige-300 dark:border-brand-800/60 shadow-sm'
               : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
@@ -130,11 +130,11 @@ export default function TeamsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search teams by name, problem statement, or required technologies..."
-            className="w-full pl-10 pr-24 py-2.5 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-24 py-2.5 bg-beige-50/70 dark:bg-dark-surface border border-beige-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-600"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg text-xs font-semibold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
           >
             Search
           </button>
@@ -218,7 +218,7 @@ export default function TeamsPage() {
                   <h3 className="text-base font-bold text-gray-900 dark:text-white line-clamp-1 mb-0.5">
                     {t.name}
                   </h3>
-                  <p className="text-xs text-brand-600 dark:text-brand-400 font-medium truncate mb-2">
+                  <p className="text-xs text-brand-700 dark:text-brand-400 font-semibold truncate mb-2">
                     {t.hackathon?.title || 'Open Hackathon'}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 leading-relaxed">
@@ -227,15 +227,15 @@ export default function TeamsPage() {
 
                   {/* Open positions highlight */}
                   {unfilledPositions.length > 0 && (
-                    <div className="mb-3 p-2 rounded-xl bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40 text-[11px]">
-                      <span className="font-semibold text-purple-700 dark:text-purple-300 block mb-1">
+                    <div className="mb-3 p-2.5 rounded-xl bg-beige-100/70 dark:bg-brand-950/40 border border-beige-300/80 dark:border-brand-900/40 text-[11px]">
+                      <span className="font-bold text-brand-900 dark:text-brand-300 block mb-1">
                         Looking for:
                       </span>
                       <div className="flex flex-wrap gap-1">
                         {unfilledPositions.slice(0, 2).map((p, i) => (
                           <span
                             key={i}
-                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-white dark:bg-dark-surface text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
+                            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white dark:bg-dark-surface text-brand-800 dark:text-brand-300 border border-beige-300 dark:border-brand-800/80"
                           >
                             {p.role}
                           </span>
@@ -267,7 +267,7 @@ export default function TeamsPage() {
 
                   <Link
                     to={`/teams/${t._id}`}
-                    className="inline-flex items-center space-x-1 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+                    className="inline-flex items-center space-x-1 text-xs font-semibold text-brand-700 dark:text-brand-300 hover:underline"
                   >
                     <span>View Team</span>
                     <ArrowRight className="w-3.5 h-3.5" />

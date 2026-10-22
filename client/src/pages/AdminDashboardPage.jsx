@@ -138,21 +138,21 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Admin Header */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-700 via-indigo-700 to-brand-800 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 text-white shadow-royal border border-brand-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-md mb-2">
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Master Moderation & Control Plane</span>
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-md mb-2 border border-white/10">
+            <ShieldAlert className="w-3.5 h-3.5 text-beige-300" />
+            <span className="text-beige-200">Master Moderation & Control Plane</span>
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Administrator Center
           </h1>
-          <p className="text-xs text-purple-200 mt-1">
+          <p className="text-xs text-brand-200 mt-1">
             Real-time platform metrics, user moderation, report resolutions, and security audit logs.
           </p>
         </div>
 
-        <div className="px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md text-xs font-semibold">
+        <div className="px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-md text-xs font-semibold border border-white/10">
           Status: <span className="text-emerald-400 font-bold">Secure Verified Admin</span>
         </div>
       </div>
@@ -162,44 +162,44 @@ export default function AdminDashboardPage() {
         <button
           onClick={() => setActiveTab('overview')}
           className={`pb-3 relative transition-colors ${
-            activeTab === 'overview' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500'
+            activeTab === 'overview' ? 'text-brand-700 dark:text-brand-300' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           <span>Platform Overview</span>
-          {activeTab === 'overview' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />}
+          {activeTab === 'overview' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-700" />}
         </button>
 
         <button
           onClick={() => setActiveTab('users')}
           className={`pb-3 relative transition-colors ${
-            activeTab === 'users' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500'
+            activeTab === 'users' ? 'text-brand-700 dark:text-brand-300' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           <span>User Accounts ({users.length})</span>
-          {activeTab === 'users' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />}
+          {activeTab === 'users' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-700" />}
         </button>
 
         <button
           onClick={() => setActiveTab('reports')}
           className={`pb-3 relative transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'reports' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500'
+            activeTab === 'reports' ? 'text-brand-700 dark:text-brand-300' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           <span>Flagged Reports ({reports.filter(r => r.status === 'pending').length} Pending)</span>
           {reports.some(r => r.status === 'pending') && (
             <span className="w-2 h-2 rounded-full bg-red-500" />
           )}
-          {activeTab === 'reports' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />}
+          {activeTab === 'reports' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-700" />}
         </button>
 
         <button
           onClick={() => setActiveTab('audit')}
           className={`pb-3 relative transition-colors ${
-            activeTab === 'audit' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500'
+            activeTab === 'audit' ? 'text-brand-700 dark:text-brand-300' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           <span>Audit Logs ({auditLogs.length})</span>
-          {activeTab === 'audit' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />}
+          {activeTab === 'audit' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-700" />}
         </button>
       </div>
 
@@ -331,7 +331,7 @@ export default function AdminDashboardPage() {
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                           u.role === 'admin'
-                            ? 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
+                            ? 'bg-beige-100 text-brand-900 dark:bg-brand-950 dark:text-brand-300 border border-beige-300 dark:border-brand-800'
                             : 'bg-gray-100 text-gray-600 dark:bg-dark-surface dark:text-gray-400'
                         }`}
                       >
@@ -361,7 +361,7 @@ export default function AdminDashboardPage() {
                       </button>
                       <button
                         onClick={() => handleToggleUserRole(u)}
-                        className="px-2.5 py-1 rounded text-[10px] font-semibold text-purple-600 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100"
+                        className="px-2.5 py-1 rounded text-[10px] font-semibold text-brand-700 bg-beige-100 dark:bg-brand-950/40 hover:bg-beige-200"
                       >
                         {u.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
                       </button>
@@ -415,7 +415,7 @@ export default function AdminDashboardPage() {
                       setSelectedReport(r);
                       setResolutionNotes('');
                     }}
-                    className="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-sm"
+                    className="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
                   >
                     Review & Resolve
                   </button>
@@ -510,7 +510,7 @@ export default function AdminDashboardPage() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-xl"
+                className="px-4 py-2 text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 rounded-xl shadow-royal transition-all"
               >
                 Save Resolution
               </button>

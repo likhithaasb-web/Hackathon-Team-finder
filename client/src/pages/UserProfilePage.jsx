@@ -148,7 +148,7 @@ export default function UserProfilePage() {
       {/* Profile Header Hero Card */}
       <div className="rounded-3xl glass-card overflow-hidden shadow-xl border border-gray-200 dark:border-dark-border">
         {/* Cover pattern */}
-        <div className="h-40 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 relative">
+        <div className="h-40 bg-gradient-to-r from-brand-950 via-brand-800 to-brand-700 relative">
           <div className="absolute top-4 right-4 flex items-center space-x-2">
             <button
               onClick={handleCopyLink}
