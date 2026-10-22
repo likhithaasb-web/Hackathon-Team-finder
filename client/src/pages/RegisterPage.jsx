@@ -39,6 +39,46 @@ export default function RegisterPage() {
   const [socialLoading, setSocialLoading] = useState(null);
 
   const handleSocialRegister = async (provider) => {
+    if (provider === 'google') {
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      if (window.google?.accounts?.oauth2 && googleClientId) {
+        setSocialLoading('google');
+        try {
+          const client = window.google.accounts.oauth2.initTokenClient({
+            client_id: googleClientId,
+            scope: 'email profile openid',
+            callback: async (tokenResponse) => {
+              if (tokenResponse.error) {
+                setSocialLoading(null);
+                return;
+              }
+              try {
+                const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const googleProfile = await userRes.json();
+                const result = await socialLogin('google', {
+                  email: googleProfile.email,
+                  fullName: googleProfile.name,
+                  avatarUrl: googleProfile.picture,
+                });
+                setSocialLoading(null);
+                if (result?.success) {
+                  navigate('/dashboard');
+                }
+              } catch (err) {
+                setSocialLoading(null);
+              }
+            },
+          });
+          client.requestAccessToken();
+          return;
+        } catch (err) {
+          console.warn('GIS error in register', err);
+        }
+      }
+    }
+
     setSocialLoading(provider);
     const result = await socialLogin(provider);
     setSocialLoading(null);

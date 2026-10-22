@@ -43,9 +43,59 @@ export default function LoginPage() {
   const handleSocialLogin = async (provider) => {
     setErrorMessage('');
     setErrorCode('');
-    setSocialLoading(provider);
 
-    // If user already typed their email in the input, send it along, otherwise use default provider profile
+    if (provider === 'google') {
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+      // If GIS library is loaded and client ID exists, trigger Google OAuth Popup
+      if (window.google?.accounts?.oauth2 && googleClientId) {
+        setSocialLoading('google');
+        try {
+          const client = window.google.accounts.oauth2.initTokenClient({
+            client_id: googleClientId,
+            scope: 'email profile openid',
+            callback: async (tokenResponse) => {
+              if (tokenResponse.error) {
+                setSocialLoading(null);
+                setErrorMessage('Google Sign-In was cancelled or failed.');
+                return;
+              }
+
+              try {
+                // Fetch verified profile from Google userinfo
+                const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const googleProfile = await userRes.json();
+
+                const result = await socialLogin('google', {
+                  email: googleProfile.email,
+                  fullName: googleProfile.name,
+                  avatarUrl: googleProfile.picture,
+                });
+
+                setSocialLoading(null);
+                if (result?.success) {
+                  navigate(from, { replace: true });
+                } else {
+                  setErrorMessage(result?.message || 'Failed to complete sign in.');
+                }
+              } catch (fetchErr) {
+                setSocialLoading(null);
+                setErrorMessage('Failed to retrieve user profile from Google.');
+              }
+            },
+          });
+          client.requestAccessToken();
+          return;
+        } catch (err) {
+          console.warn('GIS popup init failed, using direct sign-in fallback', err);
+        }
+      }
+    }
+
+    // Default flow / fallback / GitHub
+    setSocialLoading(provider);
     const profileData = email.trim() ? { email: email.trim() } : {};
     const result = await socialLogin(provider, profileData);
     setSocialLoading(null);
