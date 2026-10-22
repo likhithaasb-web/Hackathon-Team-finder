@@ -161,6 +161,7 @@ app.get('/api/v1/docs', (req, res) => {
       auth: {
         'POST /api/v1/auth/register': 'Register a new user account',
         'POST /api/v1/auth/login': 'Authenticate user & receive JWT token',
+        'POST /api/v1/auth/social-login': 'Authenticate user via Google or GitHub OAuth profile',
         'GET /api/v1/auth/me': 'Get current authenticated user profile',
         'PUT /api/v1/auth/profile': 'Update current user profile and skills',
         'POST /api/v1/auth/forgot-password': 'Request password reset email',
