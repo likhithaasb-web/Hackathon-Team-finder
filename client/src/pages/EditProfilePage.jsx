@@ -17,10 +17,12 @@ import {
 } from 'lucide-react';
 
 const COMMON_SKILLS = [
-  'React', 'Node.js', 'Python', 'TypeScript', 'Tailwind CSS', 'Figma',
-  'PyTorch', 'FastAPI', 'Next.js', 'Go', 'Docker', 'PostgreSQL',
-  'MongoDB', 'Solidity', 'AWS', 'Flutter', 'UI/UX Design', 'C++',
-  'Rust', 'GraphQL', 'Kubernetes', 'Pandas', 'TensorFlow', 'Three.js',
+  'Java', 'Python', 'C', 'C++', 'JavaScript', 'TypeScript', 'React', 'Node.js',
+  'Next.js', 'Express', 'Tailwind CSS', 'HTML/CSS', 'FastAPI', 'Django',
+  'PyTorch', 'TensorFlow', 'Machine Learning', 'Figma', 'UI/UX Design',
+  'Docker', 'Kubernetes', 'AWS', 'Google Cloud', 'PostgreSQL', 'MongoDB',
+  'MySQL', 'Redis', 'SQL', 'Go', 'Rust', 'Flutter', 'React Native',
+  'Kotlin', 'Swift', 'Solidity', 'Web3', 'Git',
 ];
 
 export default function EditProfilePage() {
@@ -206,11 +208,11 @@ export default function EditProfilePage() {
                 onChange={(e) => updateField('yearOfStudy', e.target.value)}
                 className="w-full px-3 py-2 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl text-sm"
               >
-                <option value="Freshman">Freshman</option>
-                <option value="Sophomore">Sophomore</option>
-                <option value="Junior">Junior</option>
-                <option value="Senior">Senior</option>
-                <option value="Graduate">Graduate</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="Postgraduate">Postgraduate</option>
                 <option value="Alumni / Professional">Alumni / Professional</option>
               </select>
             </div>

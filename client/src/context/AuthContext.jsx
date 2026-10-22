@@ -17,6 +17,10 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('hackmate_token');
       if (storedToken) {
+        if (storedToken.startsWith('demo_token_')) {
+          setLoading(false);
+          return;
+        }
         try {
           const res = await apiClient.get('/auth/me');
           if (res.data?.success && res.data.user) {
@@ -141,6 +145,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const demoLogin = (profileData = {}) => {
+    const dummyUser = {
+      _id: `user_${Date.now()}`,
+      fullName: profileData.fullName || 'HackMate Explorer',
+      username: profileData.username || `builder_${Math.floor(100 + Math.random() * 900)}`,
+      email: profileData.email || 'builder@hackmate.dev',
+      roleTitle: profileData.roleTitle || 'Full-Stack Developer',
+      college: profileData.college || 'Vignan',
+      yearOfStudy: profileData.yearOfStudy || '3rd Year',
+      location: profileData.location || 'India',
+      skills: profileData.skills?.length ? profileData.skills : ['Java', 'Python', 'React', 'Node.js'],
+      preferredRoles: profileData.preferredRoles?.length ? profileData.preferredRoles : ['Full-Stack', 'AI/ML Engineer'],
+      collaborationMode: profileData.collaborationMode || 'Remote',
+      availability: profileData.availability || 'Flexible',
+      bio: profileData.bio || 'Passionate builder eager to win hackathons.',
+      avatarUrl:
+        profileData.avatarUrl ||
+        `https://api.dicebear.com/7.x/bottts/svg?seed=${profileData.username || 'builder'}`,
+      role: 'member',
+      isOnline: true,
+      createdAt: new Date().toISOString(),
+    };
+    const mockToken = `demo_token_${Date.now()}`;
+    setToken(mockToken);
+    setUser(dummyUser);
+    localStorage.setItem('hackmate_token', mockToken);
+    localStorage.setItem('hackmate_user', JSON.stringify(dummyUser));
+    toast.success(`Welcome to HackMate, ${dummyUser.fullName}!`);
+    return { success: true, user: dummyUser };
+  };
+
   const refreshUser = async () => {
     try {
       const res = await apiClient.get('/auth/me');
@@ -162,6 +197,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user && !!token,
         login,
         register,
+        demoLogin,
         socialLogin,
         logout,
         updateProfile,

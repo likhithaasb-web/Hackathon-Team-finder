@@ -15,9 +15,12 @@ import {
 } from 'lucide-react';
 
 const COMMON_SKILLS = [
-  'React', 'Node.js', 'Python', 'TypeScript', 'Tailwind CSS', 'Figma',
-  'PyTorch', 'FastAPI', 'Next.js', 'Go', 'Docker', 'PostgreSQL',
-  'MongoDB', 'Solidity', 'AWS', 'Flutter', 'UI/UX Design', 'C++',
+  'Java', 'Python', 'C', 'C++', 'JavaScript', 'TypeScript', 'React', 'Node.js',
+  'Next.js', 'Express', 'Tailwind CSS', 'HTML/CSS', 'FastAPI', 'Django',
+  'PyTorch', 'TensorFlow', 'Machine Learning', 'Figma', 'UI/UX Design',
+  'Docker', 'Kubernetes', 'AWS', 'Google Cloud', 'PostgreSQL', 'MongoDB',
+  'MySQL', 'Redis', 'SQL', 'Go', 'Rust', 'Flutter', 'React Native',
+  'Kotlin', 'Swift', 'Solidity', 'Web3', 'Git',
 ];
 
 export default function CreateTeamPage() {

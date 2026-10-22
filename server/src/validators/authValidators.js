@@ -7,8 +7,22 @@ export const registerSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
   roleTitle: z.string().optional(),
   college: z.string().optional(),
+  department: z.string().optional(),
+  degree: z.string().optional(),
+  yearOfStudy: z.string().optional(),
+  location: z.string().optional(),
+  experienceLevel: z.string().optional(),
+  preferredRoles: z.array(z.string()).optional(),
   skills: z.array(z.string()).optional(),
-});
+  interests: z.array(z.string()).optional(),
+  preferredHackathonCategories: z.array(z.string()).optional(),
+  availability: z.string().optional(),
+  collaborationMode: z.string().optional(),
+  bio: z.string().optional(),
+  githubUrl: z.string().optional(),
+  linkedinUrl: z.string().optional(),
+  portfolioUrl: z.string().optional(),
+}).passthrough();
 
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address').trim().toLowerCase(),

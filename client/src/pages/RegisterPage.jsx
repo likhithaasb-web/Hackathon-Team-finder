@@ -18,12 +18,18 @@ import {
   Loader2,
   AlertCircle,
   X,
+  Database,
+  ExternalLink,
+  Plus,
 } from 'lucide-react';
 
 const COMMON_SKILLS = [
-  'React', 'Node.js', 'Python', 'TypeScript', 'Tailwind CSS', 'Figma',
-  'PyTorch', 'FastAPI', 'Next.js', 'Go', 'Docker', 'PostgreSQL',
-  'MongoDB', 'Solidity', 'AWS', 'Flutter', 'UI/UX Design', 'C++',
+  'Java', 'Python', 'C', 'C++', 'JavaScript', 'TypeScript', 'React', 'Node.js',
+  'Next.js', 'Express', 'Tailwind CSS', 'HTML/CSS', 'FastAPI', 'Django',
+  'PyTorch', 'TensorFlow', 'Machine Learning', 'Figma', 'UI/UX Design',
+  'Docker', 'Kubernetes', 'AWS', 'Google Cloud', 'PostgreSQL', 'MongoDB',
+  'MySQL', 'Redis', 'SQL', 'Go', 'Rust', 'Flutter', 'React Native',
+  'Kotlin', 'Swift', 'Solidity', 'Web3', 'Git',
 ];
 
 const PREFERRED_ROLES = [
@@ -33,13 +39,28 @@ const PREFERRED_ROLES = [
 ];
 
 export default function RegisterPage() {
-  const { register, socialLogin } = useAuth();
+  const { register, socialLogin, demoLogin } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [socialLoading, setSocialLoading] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [customSkillInput, setCustomSkillInput] = useState('');
+
+  const handleLaunchDemoSession = () => {
+    demoLogin(formData);
+    navigate('/dashboard');
+  };
+
+  const handleAddCustomSkill = () => {
+    const trimmed = customSkillInput.trim();
+    if (!trimmed) return;
+    if (!formData.skills.includes(trimmed)) {
+      setFormData(prev => ({ ...prev, skills: [...prev.skills, trimmed] }));
+    }
+    setCustomSkillInput('');
+  };
 
   const handleSocialRegister = async (provider) => {
     setErrorMessage('');
@@ -118,7 +139,7 @@ export default function RegisterPage() {
     college: '',
     department: 'Computer Science',
     degree: 'B.S.',
-    yearOfStudy: 'Junior',
+    yearOfStudy: '3rd Year',
     location: '',
     experienceLevel: 'Intermediate',
     preferredRoles: ['Full-Stack'],
@@ -222,18 +243,64 @@ export default function RegisterPage() {
         {/* Wizard Card */}
         <div className="p-6 sm:p-8 rounded-2xl glass-card shadow-xl border border-gray-200 dark:border-dark-border">
           {errorMessage && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-start space-x-2.5 animate-fadeIn">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span className="flex-1 leading-relaxed font-medium">{errorMessage}</span>
-              <button
-                type="button"
-                onClick={() => setErrorMessage('')}
-                className="hover:opacity-75 transition-opacity p-0.5"
-                aria-label="Dismiss error"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            (errorMessage.toLowerCase().includes('buffer') ||
+            errorMessage.toLowerCase().includes('database') ||
+            errorMessage.toLowerCase().includes('findone') ||
+            errorMessage.toLowerCase().includes('timed out')) ? (
+              <div className="mb-5 p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-900 dark:text-amber-200 text-xs space-y-3 animate-fadeIn">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-2 text-amber-800 dark:text-amber-300 font-bold text-sm">
+                    <Database className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span>Database Connection Timed Out</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setErrorMessage('')}
+                    className="text-amber-600 dark:text-amber-400 hover:opacity-75 p-0.5 rounded transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-xs">
+                  The backend database on Render cannot be reached (Mongoose query timed out). 
+                  To connect MongoDB Atlas permanently: in <span className="font-semibold text-amber-800 dark:text-amber-300">cloud.mongodb.com → Network Access</span>, allow IP <code className="bg-white/40 dark:bg-black/30 px-1 py-0.5 rounded text-amber-800 dark:text-amber-300 font-mono">0.0.0.0/0</code>.
+                </p>
+
+                <div className="pt-2 flex flex-col sm:flex-row gap-2 items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={handleLaunchDemoSession}
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-gray-950 font-bold text-xs shadow-md transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-gray-950" />
+                    <span>Launch in Demo Mode with this Profile →</span>
+                  </button>
+                  <a
+                    href="https://cloud.mongodb.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-amber-700 dark:text-amber-400 hover:underline inline-flex items-center space-x-1"
+                  >
+                    <span>MongoDB Atlas Settings</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-start space-x-2.5 animate-fadeIn">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span className="flex-1 leading-relaxed font-medium">{errorMessage}</span>
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage('')}
+                  className="hover:opacity-75 transition-opacity p-0.5"
+                  aria-label="Dismiss error"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )
           )}
           {step === 1 && (
             <div className="space-y-4">
@@ -424,11 +491,11 @@ export default function RegisterPage() {
                     onChange={(e) => updateField('yearOfStudy', e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500"
                   >
-                    <option value="Freshman">Freshman</option>
-                    <option value="Sophomore">Sophomore</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Graduate">Graduate</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                    <option value="Postgraduate">Postgraduate</option>
                     <option value="Alumni / Professional">Alumni / Professional</option>
                   </select>
                 </div>
@@ -490,7 +557,7 @@ export default function RegisterPage() {
                 <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                   Select Technical Skills & Tools (Click to toggle)
                 </label>
-                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2 bg-gray-50 dark:bg-dark-surface rounded-xl border border-gray-200 dark:border-dark-border">
+                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-dark-surface rounded-xl border border-gray-200 dark:border-dark-border">
                   {COMMON_SKILLS.map((sk) => {
                     const isSelected = formData.skills.includes(sk);
                     return (
@@ -508,6 +575,45 @@ export default function RegisterPage() {
                       </button>
                     );
                   })}
+                  {/* Any custom added skills that aren't in COMMON_SKILLS */}
+                  {formData.skills
+                    .filter((s) => !COMMON_SKILLS.includes(s))
+                    .map((sk) => (
+                      <button
+                        type="button"
+                        key={sk}
+                        onClick={() => toggleArrayItem('skills', sk)}
+                        className="px-2.5 py-1 rounded-lg text-xs font-medium bg-brand-700 text-white shadow-sm transition-all flex items-center space-x-1"
+                      >
+                        <span>{sk}</span>
+                        <span>✕</span>
+                      </button>
+                    ))}
+                </div>
+
+                {/* Add Custom Skill input */}
+                <div className="mt-2.5 flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={customSkillInput}
+                    onChange={(e) => setCustomSkillInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCustomSkill();
+                      }
+                    }}
+                    placeholder="Add other technology (e.g. Spring Boot, OpenCV, LangChain)..."
+                    className="flex-1 px-3 py-2 text-xs bg-gray-50 dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCustomSkill}
+                    className="inline-flex items-center space-x-1 px-3.5 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white transition-colors shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add</span>
+                  </button>
                 </div>
               </div>
 

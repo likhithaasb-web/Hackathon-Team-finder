@@ -5,7 +5,29 @@ import { sendEmail } from '../utils/email.js';
 
 export const register = async (req, res, next) => {
   try {
-    const { fullName, username, email, password, roleTitle, college, skills } = req.body;
+    const {
+      fullName,
+      username,
+      email,
+      password,
+      roleTitle,
+      college,
+      department,
+      degree,
+      yearOfStudy,
+      location,
+      experienceLevel,
+      preferredRoles,
+      skills,
+      interests,
+      preferredHackathonCategories,
+      availability,
+      collaborationMode,
+      bio,
+      githubUrl,
+      linkedinUrl,
+      portfolioUrl,
+    } = req.body;
 
     const existingUser = await User.findOne({
       $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }],
@@ -26,7 +48,21 @@ export const register = async (req, res, next) => {
       password,
       roleTitle: roleTitle || 'Developer',
       college: college || '',
+      department: department || '',
+      degree: degree || '',
+      yearOfStudy: yearOfStudy || '',
+      location: location || '',
+      experienceLevel: experienceLevel || 'Intermediate',
+      preferredRoles: Array.isArray(preferredRoles) ? preferredRoles : ['Full-Stack'],
       skills: Array.isArray(skills) ? skills : [],
+      interests: Array.isArray(interests) ? interests : [],
+      preferredHackathonCategories: Array.isArray(preferredHackathonCategories) ? preferredHackathonCategories : [],
+      availability: availability || 'Flexible',
+      collaborationMode: collaborationMode || 'Remote',
+      bio: bio || '',
+      githubUrl: githubUrl || '',
+      linkedinUrl: linkedinUrl || '',
+      portfolioUrl: portfolioUrl || '',
       isOnline: true,
       lastSeen: new Date(),
     });
