@@ -16,6 +16,8 @@ import {
   Github,
   Linkedin,
   Loader2,
+  AlertCircle,
+  X,
 } from 'lucide-react';
 
 const COMMON_SKILLS = [
@@ -37,8 +39,10 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [socialLoading, setSocialLoading] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSocialRegister = async (provider) => {
+    setErrorMessage('');
     if (provider === 'google') {
       const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       if (window.google?.accounts?.oauth2 && googleClientId) {
@@ -50,6 +54,16 @@ export default function RegisterPage() {
             callback: async (tokenResponse) => {
               if (tokenResponse.error) {
                 setSocialLoading(null);
+                const errDetail = tokenResponse.error_description || tokenResponse.error;
+                if (String(errDetail).includes('access_denied') || String(errDetail).includes('restricted')) {
+                  setErrorMessage(
+                    'Google Sign-In Restricted: In Google Cloud Console, go to "OAuth consent screen" → "Test users" → add your Google email address.'
+                  );
+                } else if (String(errDetail).includes('popup_closed_by_user')) {
+                  setErrorMessage('Google Sign-In popup was closed before completing registration.');
+                } else {
+                  setErrorMessage(`Google Sign-In: ${errDetail}`);
+                }
                 return;
               }
               try {
@@ -65,13 +79,16 @@ export default function RegisterPage() {
                 setSocialLoading(null);
                 if (result?.success) {
                   navigate('/dashboard');
+                } else {
+                  setErrorMessage(result?.message || 'Failed to complete registration with Google.');
                 }
               } catch (err) {
                 setSocialLoading(null);
+                setErrorMessage('Failed to retrieve user profile from Google. Please try again.');
               }
             },
           });
-          client.requestAccessToken();
+          client.requestAccessToken({ prompt: 'select_account' });
           return;
         } catch (err) {
           console.warn('GIS error in register', err);
@@ -84,6 +101,8 @@ export default function RegisterPage() {
     setSocialLoading(null);
     if (result?.success) {
       navigate('/dashboard');
+    } else {
+      setErrorMessage(result?.message || `Failed to sign up with ${provider}.`);
     }
   };
 
@@ -139,12 +158,15 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     setSubmitting(true);
     const res = await register(formData);
     setSubmitting(false);
 
     if (res?.success) {
       navigate('/dashboard');
+    } else {
+      setErrorMessage(res?.message || 'Failed to complete registration.');
     }
   };
 
@@ -197,6 +219,20 @@ export default function RegisterPage() {
 
         {/* Wizard Card */}
         <div className="p-6 sm:p-8 rounded-2xl glass-card shadow-xl border border-gray-200 dark:border-dark-border">
+          {errorMessage && (
+            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-start space-x-2.5 animate-fadeIn">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span className="flex-1 leading-relaxed font-medium">{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage('')}
+                className="hover:opacity-75 transition-opacity p-0.5"
+                aria-label="Dismiss error"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
           {step === 1 && (
             <div className="space-y-4">
               {/* Social Login Options */}

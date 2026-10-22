@@ -57,7 +57,16 @@ export default function LoginPage() {
             callback: async (tokenResponse) => {
               if (tokenResponse.error) {
                 setSocialLoading(null);
-                setErrorMessage('Google Sign-In was cancelled or failed.');
+                const errDetail = tokenResponse.error_description || tokenResponse.error;
+                if (String(errDetail).includes('access_denied') || String(errDetail).includes('restricted')) {
+                  setErrorMessage(
+                    'Google Sign-In Restricted: In Google Cloud Console, go to "OAuth consent screen" → "Test users" → add your Google email address.'
+                  );
+                } else if (String(errDetail).includes('popup_closed_by_user')) {
+                  setErrorMessage('Google Sign-In popup was closed before completing login.');
+                } else {
+                  setErrorMessage(`Google Sign-In: ${errDetail}`);
+                }
                 return;
               }
 
@@ -82,11 +91,11 @@ export default function LoginPage() {
                 }
               } catch (fetchErr) {
                 setSocialLoading(null);
-                setErrorMessage('Failed to retrieve user profile from Google.');
+                setErrorMessage('Failed to retrieve user profile from Google. Please try again.');
               }
             },
           });
-          client.requestAccessToken();
+          client.requestAccessToken({ prompt: 'select_account' });
           return;
         } catch (err) {
           console.warn('GIS popup init failed, using direct sign-in fallback', err);
