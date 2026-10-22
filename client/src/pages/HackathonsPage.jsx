@@ -19,7 +19,19 @@ import { HackathonCardSkeleton } from '../components/Skeleton.jsx';
 
 const FORMATS = ['All Formats', 'Online', 'In-person', 'Hybrid'];
 const STATUSES = ['All Statuses', 'upcoming', 'ongoing', 'completed'];
-const THEMES = ['All Themes', 'AI', 'Web3', 'Sustainability', 'FinTech', 'Open Innovation'];
+const THEMES = [
+  'All Themes',
+  'AI & Machine Learning',
+  'Web3',
+  'FinTech',
+  'HealthTech',
+  'Sustainability',
+  'Cybersecurity',
+  'Cloud',
+  'EdTech',
+  'IoT & Hardware',
+  'Open Innovation',
+];
 
 export default function HackathonsPage() {
   const [hackathons, setHackathons] = useState([]);

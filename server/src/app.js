@@ -5,8 +5,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
-
 import fs from 'fs';
+import mongoose from 'mongoose';
+import { seedDatabase } from './utils/seeder.js';
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
@@ -77,13 +78,74 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 
 // Health check endpoints (placed before rate limiter so Render probes never get throttled)
 app.get(['/health', '/api/v1/health'], (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
+  const isDbConnected = mongoose.connection.readyState === 1;
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+  const dbState = states[mongoose.connection.readyState] || 'unknown';
+
+  res.status(isDbConnected ? 200 : 503).json({
+    status: isDbConnected ? 'healthy' : 'degraded',
+    service: 'HackMate API',
+    version: '1.0.0',
+    database: {
+      status: dbState,
+      connected: isDbConnected,
+      readyState: mongoose.connection.readyState,
+      isAtlas: (process.env.MONGODB_URI || '').includes('mongodb+srv://'),
+      configured: Boolean(process.env.MONGODB_URI),
+    },
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    version: '1.0.0',
-    service: 'HackMate API',
   });
+});
+
+// System route to trigger or refresh demo dataset on demand
+app.all(['/system/seed', '/api/v1/system/seed'], async (req, res) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        code: 'DATABASE_DISCONNECTED',
+        message: 'Cannot seed demo data: MongoDB is not connected.',
+        hint: 'Please verify MONGODB_URI in your Render Environment Variables and ensure MongoDB Atlas Network Access allows 0.0.0.0/0.',
+      });
+    }
+    const result = await seedDatabase(false);
+    res.status(200).json({
+      success: true,
+      message: 'Demo dataset seeded successfully with all filter variations!',
+      result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: `Failed to seed demo data: ${err.message}`,
+    });
+  }
+});
+
+// Database readiness guard for all /api/v1 routes
+app.use('/api/v1', (req, res, next) => {
+  // Allow health checks, docs, and system endpoints without DB
+  if (req.path === '/health' || req.path === '/docs' || req.path.startsWith('/system/')) {
+    return next();
+  }
+
+  if (mongoose.connection.readyState !== 1) {
+    const isConnecting = mongoose.connection.readyState === 2;
+    return res.status(503).json({
+      success: false,
+      code: 'DATABASE_DISCONNECTED',
+      message: isConnecting
+        ? 'Database is currently connecting. Please wait a few seconds and try again.'
+        : 'Backend database is offline. If deployed on Render, please verify that MONGODB_URI is configured in Render Environment Variables and that MongoDB Atlas allows IP 0.0.0.0/0 (Network Access).',
+      troubleshooting: {
+        step1: 'Log into cloud.mongodb.com and go to Network Access. Ensure 0.0.0.0/0 (Allow Access from Anywhere) is active.',
+        step2: 'Log into dashboard.render.com -> HackMate API Web Service -> Environment.',
+        step3: 'Ensure MONGODB_URI is set to your MongoDB Atlas connection string (mongodb+srv://...).',
+      },
+    });
+  }
+  next();
 });
 
 // Apply general API rate limiting to /api/v1

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import apiClient from '../api/client.js';
+import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import {
   Mail,
@@ -16,6 +18,10 @@ import {
   Loader2,
   Users,
   Check,
+  Database,
+  RefreshCw,
+  ExternalLink,
+  Crown,
 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -29,11 +35,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [errorCode, setErrorCode] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+    setErrorCode('');
 
     if (!email.trim() || !password) {
       setErrorMessage('Please enter both your email address and password.');
@@ -50,6 +59,29 @@ export default function LoginPage() {
       setErrorMessage(
         result?.message || 'Invalid email or password. Please verify your credentials and try again.'
       );
+      if (result?.code) {
+        setErrorCode(result.code);
+      }
+    }
+  };
+
+  const handleSeedDatabase = async () => {
+    setSeeding(true);
+    try {
+      const res = await apiClient.post('/system/seed');
+      if (res.data?.success) {
+        toast.success('Database initialized with 16 users, 10 hackathons, and 16 demo teams!');
+        setErrorMessage('');
+        setErrorCode('');
+      } else {
+        toast.error(res.data?.message || 'Failed to initialize database.');
+      }
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || 'Database is unreachable. Please verify MONGODB_URI in Render.'
+      );
+    } finally {
+      setSeeding(false);
     }
   };
 
@@ -57,6 +89,7 @@ export default function LoginPage() {
     setEmail(demoEmail);
     setPassword('Password@123');
     setErrorMessage('');
+    setErrorCode('');
   };
 
   return (
@@ -104,47 +137,72 @@ export default function LoginPage() {
         </div>
 
         {/* 3. Demo Quick-Login Bar for Easy Testing */}
-        <div className="p-3.5 rounded-2xl bg-navy-900/70 border border-violet-500/20 backdrop-blur-md text-xs shadow-lg">
-          <div className="flex items-center justify-between mb-2">
+        <div className="p-3.5 rounded-2xl bg-navy-900/70 border border-violet-500/20 backdrop-blur-md text-xs shadow-lg space-y-2">
+          <div className="flex items-center justify-between">
             <span className="font-bold text-violet-300 flex items-center space-x-1.5">
               <Sparkles className="w-3.5 h-3.5 text-violet-400" />
               <span>One-Click Demo Accounts</span>
             </span>
-            <span className="text-[10px] text-gray-400 font-mono">pwd: Password@123</span>
+            <button
+              type="button"
+              disabled={seeding}
+              onClick={handleSeedDatabase}
+              title="Populate or reset demo users, hackathons & projects in the database"
+              className="text-[10px] text-violet-300 hover:text-white flex items-center space-x-1 px-2 py-0.5 rounded-md bg-white/5 hover:bg-violet-600/30 border border-white/10 transition-colors"
+            >
+              {seeding ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              <span>{seeding ? 'Seeding...' : 'Seed Data'}</span>
+            </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('likhitha.asb@gmail.com')}
+              className="px-2 py-1.5 rounded-xl bg-violet-600/20 hover:bg-violet-600/35 border border-violet-500/30 text-left transition-all flex items-center space-x-1.5 group"
+            >
+              <Crown className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+              <span className="truncate font-bold text-white text-[11px]">Likhitha (Admin)</span>
+            </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('admin@hackmate.dev')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-2 group"
+              className="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-1.5 group"
             >
               <Shield className="w-3.5 h-3.5 text-violet-400 group-hover:scale-110 transition-transform shrink-0" />
-              <span className="truncate font-semibold text-gray-200 group-hover:text-white">Admin (Alex)</span>
+              <span className="truncate font-semibold text-gray-200 group-hover:text-white text-[11px]">Alex (Admin)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('sophia@hackmate.dev')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-2 group"
+              className="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-1.5 group"
             >
               <User className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
-              <span className="truncate font-semibold text-gray-200 group-hover:text-white">UI/UX (Sophia)</span>
+              <span className="truncate font-semibold text-gray-200 group-hover:text-white text-[11px]">Sophia (UI/UX)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('marcus@hackmate.dev')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-2 group"
+              className="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-1.5 group"
             >
               <User className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform shrink-0" />
-              <span className="truncate font-semibold text-gray-200 group-hover:text-white">Backend (Marcus)</span>
+              <span className="truncate font-semibold text-gray-200 group-hover:text-white text-[11px]">Marcus (Cloud)</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('priya@hackmate.dev')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-2 group"
+              className="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-1.5 group"
             >
               <User className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform shrink-0" />
-              <span className="truncate font-semibold text-gray-200 group-hover:text-white">AI/ML (Priya)</span>
+              <span className="truncate font-semibold text-gray-200 group-hover:text-white text-[11px]">Priya (AI/ML)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('liam@hackmate.dev')}
+              className="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-violet-600/20 border border-white/10 hover:border-violet-500/40 text-left transition-all flex items-center space-x-1.5 group"
+            >
+              <User className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform shrink-0" />
+              <span className="truncate font-semibold text-gray-200 group-hover:text-white text-[11px]">Liam (Web3)</span>
             </button>
           </div>
         </div>
@@ -154,8 +212,66 @@ export default function LoginPage() {
           {/* Subtle top violet highlight */}
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
 
-          {/* Helpful Authentication Error Message Banner */}
-          {errorMessage && (
+          {/* Diagnostic Card for Database Offline */}
+          {(errorCode === 'DATABASE_DISCONNECTED' || errorMessage.toLowerCase().includes('buffer') || errorMessage.toLowerCase().includes('database')) ? (
+            <div className="mb-5 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-3 animate-fadeIn">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-2 text-amber-300 font-bold">
+                  <Database className="w-4 h-4 text-amber-400" />
+                  <span>MongoDB Atlas Connection Required</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setErrorMessage('');
+                    setErrorCode('');
+                  }}
+                  className="text-amber-400 hover:text-amber-200 p-0.5 rounded transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <p className="text-gray-300 text-[11px] leading-relaxed">
+                The backend on Render cannot reach MongoDB. Please complete these 2 quick steps:
+              </p>
+
+              <div className="space-y-1.5 text-[11px] bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-gray-300">
+                <p>
+                  <strong className="text-amber-300">1. Atlas Network Access:</strong> In{' '}
+                  <span className="text-white">cloud.mongodb.com</span> → Security → Network Access, add IP{' '}
+                  <span className="text-emerald-400 font-bold bg-white/10 px-1 py-0.5 rounded">0.0.0.0/0</span> (Allow access from anywhere).
+                </p>
+                <p>
+                  <strong className="text-amber-300">2. Render Environment:</strong> In{' '}
+                  <span className="text-white">dashboard.render.com</span> → Web Service → Environment, set{' '}
+                  <span className="text-violet-300 font-bold bg-white/10 px-1 py-0.5 rounded">MONGODB_URI</span> to your Atlas connection string.
+                </p>
+              </div>
+
+              <div className="pt-1 flex items-center justify-between">
+                <button
+                  type="button"
+                  disabled={seeding}
+                  onClick={handleSeedDatabase}
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold text-[11px] transition-all disabled:opacity-50"
+                >
+                  {seeding ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                  <span>{seeding ? 'Testing & Seeding...' : 'Test Connection & Seed Data'}</span>
+                </button>
+                <a
+                  href="https://cloud.mongodb.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-amber-400 hover:text-amber-300 underline inline-flex items-center space-x-1"
+                >
+                  <span>MongoDB Atlas</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+          ) : errorMessage ? (
+            /* Standard Error Banner */
             <div className="mb-5 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-start space-x-2.5 animate-fadeIn">
               <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
               <div className="flex-1">
@@ -171,7 +287,7 @@ export default function LoginPage() {
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
-          )}
+          ) : null}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}

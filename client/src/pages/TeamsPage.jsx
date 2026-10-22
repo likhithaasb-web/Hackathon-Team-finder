@@ -17,6 +17,35 @@ import {
 } from 'lucide-react';
 import EmptyState from '../components/EmptyState.jsx';
 
+const THEMES = [
+  'All Themes',
+  'AI & Machine Learning',
+  'Web3',
+  'FinTech',
+  'HealthTech',
+  'Sustainability',
+  'Cybersecurity',
+  'Cloud',
+  'EdTech',
+  'IoT & Hardware',
+  'Open Innovation',
+];
+
+const ROLES = [
+  'All Roles',
+  'Frontend',
+  'Backend',
+  'Full-Stack',
+  'AI/ML',
+  'UI/UX Designer',
+  'Cloud',
+  'Blockchain',
+  'Cybersecurity',
+  'Data Science',
+  'Mobile Developer',
+  'Business & Pitch',
+];
+
 export default function TeamsPage() {
   const location = useLocation();
   const isMyTeamsInitial = location.pathname.includes('/my-teams');
@@ -26,6 +55,8 @@ export default function TeamsPage() {
   const [search, setSearch] = useState('');
   const [recruitmentStatus, setRecruitmentStatus] = useState('open');
   const [collaborationMode, setCollaborationMode] = useState('all');
+  const [theme, setTheme] = useState('All Themes');
+  const [role, setRole] = useState('All Roles');
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
 
   useEffect(() => {
@@ -48,6 +79,8 @@ export default function TeamsPage() {
         if (search) params.append('search', search);
         if (recruitmentStatus !== 'all') params.append('recruitmentStatus', recruitmentStatus);
         if (collaborationMode !== 'all') params.append('collaborationMode', collaborationMode);
+        if (theme && theme !== 'All Themes') params.append('theme', theme);
+        if (role && role !== 'All Roles') params.append('role', role);
         params.append('page', pagination.page);
 
         const res = await apiClient.get(`/teams?${params.toString()}`);
@@ -66,7 +99,7 @@ export default function TeamsPage() {
 
   useEffect(() => {
     fetchTeams();
-  }, [activeTab, recruitmentStatus, collaborationMode, pagination.page]);
+  }, [activeTab, recruitmentStatus, collaborationMode, theme, role, pagination.page]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -171,6 +204,58 @@ export default function TeamsPage() {
               <option value="Hybrid">Hybrid</option>
             </select>
           </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+              Domain / Theme
+            </label>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="px-3 py-1.5 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg text-gray-900 dark:text-white"
+            >
+              {THEMES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+              Role Needed
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="px-3 py-1.5 bg-gray-50 dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg text-gray-900 dark:text-white"
+            >
+              {ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {(theme !== 'All Themes' || role !== 'All Roles' || recruitmentStatus !== 'open' || collaborationMode !== 'all' || search) && (
+            <div className="flex items-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setTheme('All Themes');
+                  setRole('All Roles');
+                  setRecruitmentStatus('all');
+                  setCollaborationMode('all');
+                  setSearch('');
+                }}
+                className="px-3 py-1.5 text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold"
+              >
+                Reset Filters
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

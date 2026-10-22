@@ -52,7 +52,12 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       const msg = err.response?.data?.message || 'Login failed. Please check your credentials.';
       toast.error(msg);
-      return { success: false, message: msg };
+      return {
+        success: false,
+        message: msg,
+        code: err.response?.data?.code,
+        troubleshooting: err.response?.data?.troubleshooting,
+      };
     }
   };
 
@@ -71,7 +76,12 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       const msg = err.response?.data?.message || 'Registration failed. Please try again.';
       toast.error(msg);
-      return { success: false, message: msg };
+      return {
+        success: false,
+        message: msg,
+        code: err.response?.data?.code,
+        troubleshooting: err.response?.data?.troubleshooting,
+      };
     }
   };
 

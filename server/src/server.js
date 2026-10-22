@@ -31,8 +31,22 @@ const startServer = async () => {
 
     // 4. Connect Database & initialize jobs
     connectDB()
-      .then(() => {
+      .then(async () => {
         startDeadlineCron();
+        try {
+          const User = (await import('./models/User.js')).default;
+          const userCount = await User.countDocuments();
+          if (userCount === 0) {
+            console.log('[Auto-Seed] Database is connected but empty. Seeding initial demo dataset...');
+            const { seedDatabase } = await import('./utils/seeder.js');
+            await seedDatabase(false);
+            console.log('[Auto-Seed] Initial demo data seeded successfully!');
+          } else {
+            console.log(`[Database] Found ${userCount} registered users in database.`);
+          }
+        } catch (seedErr) {
+          console.warn(`[Auto-Seed Notice] Could not run auto-seed: ${seedErr.message}`);
+        }
       })
       .catch((err) => {
         console.error(`[Database Warning] Initial connection delayed: ${err.message}`);

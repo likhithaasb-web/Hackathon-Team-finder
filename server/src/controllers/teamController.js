@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import Team from '../models/Team.js';
+import Hackathon from '../models/Hackathon.js';
 import TeamApplication from '../models/TeamApplication.js';
 import TeamInvitation from '../models/TeamInvitation.js';
 import Conversation from '../models/Conversation.js';
@@ -102,6 +103,8 @@ export const getTeams = async (req, res, next) => {
       recruitmentStatus,
       collaborationMode,
       skill,
+      role,
+      theme,
       page = 1,
       limit = 12,
     } = req.query;
@@ -112,6 +115,22 @@ export const getTeams = async (req, res, next) => {
     if (recruitmentStatus && recruitmentStatus !== 'all') query.recruitmentStatus = recruitmentStatus;
     if (collaborationMode && collaborationMode !== 'all') query.collaborationMode = collaborationMode;
 
+    if (role && role !== 'all' && role !== 'All Roles') {
+      const roleRegex = new RegExp(role.trim(), 'i');
+      query.$or = [
+        { 'openPositions.role': roleRegex },
+        { requiredSkills: roleRegex },
+      ];
+    }
+
+    if (theme && theme !== 'all' && theme !== 'All Themes') {
+      const matchingHackathons = await Hackathon.find({
+        themes: { $in: [new RegExp(theme.trim(), 'i')] },
+      }).select('_id');
+      const hackathonIds = matchingHackathons.map(h => h._id);
+      query.hackathon = { $in: hackathonIds };
+    }
+
     if (skill) {
       const skillsArray = skill.split(',').map(s => s.trim());
       query.requiredSkills = { $in: skillsArray.map(s => new RegExp(`^${s}$`, 'i')) };
@@ -119,13 +138,20 @@ export const getTeams = async (req, res, next) => {
 
     if (search && search.trim()) {
       const searchRegex = new RegExp(search.trim(), 'i');
-      query.$or = [
+      const searchConditions = [
         { name: searchRegex },
         { description: searchRegex },
         { problemStatement: searchRegex },
         { techStack: searchRegex },
         { requiredSkills: searchRegex },
+        { 'openPositions.role': searchRegex },
       ];
+      if (query.$or) {
+        query.$and = [{ $or: query.$or }, { $or: searchConditions }];
+        delete query.$or;
+      } else {
+        query.$or = searchConditions;
+      }
     }
 
     const pageNum = parseInt(page, 10) || 1;
