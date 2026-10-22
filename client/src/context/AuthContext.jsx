@@ -117,6 +117,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const socialLogin = async (provider, profileData = {}) => {
+    try {
+      const res = await apiClient.post('/auth/social-login', { provider, ...profileData });
+      if (res.data?.success) {
+        const { token: newToken, user: userData } = res.data;
+        setToken(newToken);
+        setUser(userData);
+        localStorage.setItem('hackmate_token', newToken);
+        localStorage.setItem('hackmate_user', JSON.stringify(userData));
+        toast.success(`Welcome to HackMate, ${userData.fullName}!`);
+        return { success: true, user: userData };
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || `Failed to sign in with ${provider}.`;
+      toast.error(msg);
+      return {
+        success: false,
+        message: msg,
+        code: err.response?.data?.code,
+        troubleshooting: err.response?.data?.troubleshooting,
+      };
+    }
+  };
+
   const refreshUser = async () => {
     try {
       const res = await apiClient.get('/auth/me');
@@ -138,6 +162,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user && !!token,
         login,
         register,
+        socialLogin,
         logout,
         updateProfile,
         refreshUser,

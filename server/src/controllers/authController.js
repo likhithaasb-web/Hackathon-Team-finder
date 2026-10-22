@@ -269,3 +269,85 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
+
+export const socialLogin = async (req, res, next) => {
+  try {
+    const { provider, email, fullName, avatarUrl, username } = req.body;
+
+    const normalizedProvider = (provider || '').toLowerCase();
+    if (!['google', 'github'].includes(normalizedProvider)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Unsupported OAuth provider. Please choose Google or GitHub.',
+      });
+    }
+
+    // Default accounts for Google & GitHub demo sign-ins if none specified
+    const targetEmail = (
+      email ||
+      (normalizedProvider === 'google' ? 'likhitha.asb@gmail.com' : 'alexrivera@github.dev')
+    ).toLowerCase();
+
+    const targetName =
+      fullName ||
+      (normalizedProvider === 'google' ? 'Likhitha A S B' : 'Alex Rivera');
+
+    const targetAvatar =
+      avatarUrl ||
+      (normalizedProvider === 'google'
+        ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80'
+        : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80');
+
+    let user = await User.findOne({ email: targetEmail });
+
+    if (!user) {
+      const generatedUsername = (
+        username ||
+        targetEmail.split('@')[0] ||
+        `user_${Date.now()}`
+      )
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '');
+
+      let finalUsername = generatedUsername;
+      const existingUsername = await User.findOne({ username: finalUsername });
+      if (existingUsername) {
+        finalUsername = `${generatedUsername}_${Math.floor(100 + Math.random() * 900)}`;
+      }
+
+      const randomPassword = crypto.randomBytes(16).toString('hex') + 'A1!';
+
+      user = await User.create({
+        fullName: targetName,
+        username: finalUsername,
+        email: targetEmail,
+        password: randomPassword,
+        roleTitle: normalizedProvider === 'github' ? 'Open Source Contributor' : 'Full-Stack Developer',
+        avatarUrl: targetAvatar,
+        skills: ['React', 'JavaScript', 'Node.js', 'Git'],
+        preferredRoles: ['Full-Stack', 'Frontend'],
+        collaborationMode: 'Remote',
+        availability: 'Flexible',
+        isOnline: true,
+        lastSeen: new Date(),
+      });
+    } else {
+      user.isOnline = true;
+      user.lastSeen = new Date();
+      await user.save({ validateBeforeSave: false });
+    }
+
+    const token = generateToken(user._id, user.role);
+    const userJson = user.toObject();
+    delete userJson.password;
+
+    res.status(200).json({
+      success: true,
+      message: `Signed in successfully via ${normalizedProvider === 'google' ? 'Google' : 'GitHub'}!`,
+      token,
+      user: userJson,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

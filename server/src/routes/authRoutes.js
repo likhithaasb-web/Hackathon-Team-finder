@@ -8,6 +8,7 @@ import {
   resetPassword,
   changePassword,
   logout,
+  socialLogin,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.post('/register', authLimiter, validateRequest(registerSchema), register);
 router.post('/login', authLimiter, validateRequest(loginSchema), login);
+router.post('/social-login', authLimiter, socialLogin);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, validateRequest(updateProfileSchema), updateProfile);
 router.post('/forgot-password', authLimiter, forgotPassword);
