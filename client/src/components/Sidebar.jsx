@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useSocket } from '../context/SocketContext.jsx';
 import {
   LayoutDashboard,
   Users,
@@ -12,22 +13,55 @@ import {
   Settings,
   HelpCircle,
   FolderGit2,
+  Bell,
   X,
+  Sparkles,
 } from 'lucide-react';
 
 export default function Sidebar({ isOpen, onClose }) {
   const { user, isAuthenticated } = useAuth();
+  const { unreadCount, notifications } = useSocket();
 
   if (!isAuthenticated) return null;
 
-  const links = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Find Teammates', path: '/discover', icon: Users },
-    { name: 'My Teams', path: '/teams/my-teams', icon: FolderGit2 },
-    { name: 'Hackathons', path: '/hackathons', icon: Calendar },
-    { name: 'Real-time Chat', path: '/chat', icon: MessageSquare },
-    { name: 'Connections & Requests', path: '/connections', icon: UserCheck },
-    { name: 'Saved Bookmarks', path: '/bookmarks', icon: Bookmark },
+  const unreadNotifsCount = notifications?.filter(n => !n.isRead)?.length || 0;
+
+  const sections = [
+    {
+      title: 'PLATFORM',
+      links: [
+        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        {
+          name: 'Notifications',
+          path: '/notifications',
+          icon: Bell,
+          badge: unreadNotifsCount > 0 ? unreadNotifsCount : null,
+          badgeColor: 'bg-brand-600',
+        },
+      ],
+    },
+    {
+      title: 'TEAMING & COLLABORATION',
+      links: [
+        { name: 'Find Teammates', path: '/discover', icon: Users },
+        { name: 'My Teams', path: '/teams/my-teams', icon: FolderGit2 },
+        {
+          name: 'Real-time Chat',
+          path: '/chat',
+          icon: MessageSquare,
+          badge: unreadCount > 0 ? unreadCount : null,
+          badgeColor: 'bg-emerald-600',
+        },
+        { name: 'Connections', path: '/connections', icon: UserCheck },
+      ],
+    },
+    {
+      title: 'DISCOVER & SAVE',
+      links: [
+        { name: 'Hackathons', path: '/hackathons', icon: Calendar },
+        { name: 'Saved Bookmarks', path: '/bookmarks', icon: Bookmark },
+      ],
+    },
   ];
 
   const adminLink = { name: 'Admin Dashboard', path: '/admin', icon: ShieldAlert };
@@ -37,10 +71,10 @@ export default function Sidebar({ isOpen, onClose }) {
   ];
 
   const navClass = ({ isActive }) =>
-    `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+    `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
       isActive
-        ? 'bg-brand-700 text-white dark:bg-brand-600 dark:text-white font-semibold shadow-royal'
-        : 'text-beige-800 dark:text-dark-beigeMuted hover:text-brand-700 dark:hover:text-white hover:bg-beige-100/80 dark:hover:bg-dark-card'
+        ? 'bg-brand-700 text-white dark:bg-brand-600 dark:text-white shadow-royal'
+        : 'text-gray-700 dark:text-gray-300 hover:text-brand-700 dark:hover:text-white hover:bg-beige-100/90 dark:hover:bg-dark-card/80'
     }`;
 
   return (
@@ -55,21 +89,95 @@ export default function Sidebar({ isOpen, onClose }) {
 
       {/* Sidebar Panel */}
       <aside
-        className={`fixed top-16 bottom-0 left-0 z-40 w-64 bg-white/95 dark:bg-dark-surface/95 backdrop-blur-md border-r border-beige-200/90 dark:border-dark-border flex flex-col justify-between p-4 transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-16 bottom-0 left-0 z-40 w-64 bg-white/95 dark:bg-dark-surface/95 backdrop-blur-md border-r border-beige-200/90 dark:border-dark-border flex flex-col justify-between p-3.5 transition-transform duration-300 lg:translate-x-0 ${
           isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
       >
         {/* Navigation Links */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between lg:hidden px-2 pt-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-beige-600 dark:text-dark-beigeMuted">Navigation</span>
-            <button onClick={onClose} className="p-1 rounded-lg text-beige-500 hover:text-beige-800 dark:hover:text-white">
+        <div className="space-y-5 overflow-y-auto pr-1">
+          <div className="flex items-center justify-between lg:hidden px-2 pt-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Navigation</span>
+            <button onClick={onClose} className="p-1 rounded-lg text-gray-500 hover:text-gray-800 dark:hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="space-y-1">
-            {links.map((link) => {
+          {sections.map((sec, sIdx) => (
+            <div key={sIdx} className="space-y-1">
+              <h5 className="px-3 text-[10px] font-extrabold tracking-wider uppercase text-gray-400 dark:text-gray-500 mb-1.5">
+                {sec.title}
+              </h5>
+              {sec.links.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    onClick={onClose}
+                    className={navClass}
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span>{link.name}</span>
+                    </div>
+                    {link.badge && (
+                      <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold text-white ${link.badgeColor}`}>
+                        {link.badge}
+                      </span>
+                    )}
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
+
+          {user?.role === 'admin' && (
+            <div className="space-y-1 pt-1">
+              <h5 className="px-3 text-[10px] font-extrabold tracking-wider uppercase text-amber-500 mb-1.5">
+                MODERATION
+              </h5>
+              <NavLink
+                to={adminLink.path}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                    isActive
+                      ? 'bg-amber-600 text-white shadow-sm'
+                      : 'text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-dark-card'
+                  }`
+                }
+              >
+                <ShieldAlert className="w-4 h-4 shrink-0" />
+                <span>{adminLink.name}</span>
+              </NavLink>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom Section */}
+        <div className="space-y-2 pt-3 border-t border-beige-200/90 dark:border-dark-border shrink-0">
+          {/* User Mini Card with Status */}
+          {user && (
+            <div className="p-2.5 rounded-xl bg-beige-50 dark:bg-dark-card border border-beige-200 dark:border-dark-border flex items-center space-x-3 mb-1">
+              <div className="relative shrink-0">
+                <img
+                  src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80'}
+                  alt={user.fullName}
+                  className="w-8 h-8 rounded-lg object-cover ring-1 ring-brand-600/30"
+                />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-dark-card" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{user.fullName}</p>
+                <p className="text-[10px] text-brand-600 dark:text-brand-400 truncate font-semibold">
+                  {user.roleTitle || 'Innovator'}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-0.5">
+            {bottomLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <NavLink
@@ -78,66 +186,20 @@ export default function Sidebar({ isOpen, onClose }) {
                   onClick={onClose}
                   className={navClass}
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span>{link.name}</span>
+                  <div className="flex items-center space-x-2.5">
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span>{link.name}</span>
+                  </div>
                 </NavLink>
               );
             })}
-
-            {user?.role === 'admin' && (
-              <NavLink
-                to={adminLink.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-amber-600 text-white font-semibold shadow-sm'
-                      : 'text-amber-800 dark:text-amber-300 hover:bg-beige-100 dark:hover:bg-dark-card'
-                  }`
-                }
-              >
-                <ShieldAlert className="w-4 h-4 shrink-0" />
-                <span>{adminLink.name}</span>
-              </NavLink>
-            )}
           </div>
-        </div>
 
-        {/* Bottom Section */}
-        <div className="space-y-2 pt-4 border-t border-beige-200/80 dark:border-dark-border">
-          {/* User Mini Card */}
-          {user && (
-            <div className="p-2.5 rounded-xl bg-beige-100/70 dark:bg-dark-card border border-beige-200 dark:border-dark-border flex items-center space-x-3 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
-                {user.fullName?.charAt(0) || 'U'}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-gray-900 dark:text-dark-beige truncate">{user.fullName}</p>
-                <p className="text-[10px] text-beige-700 dark:text-beige-400 truncate font-medium">{user.primaryRole || 'Developer'}</p>
-              </div>
-            </div>
-          )}
-
-          {bottomLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                onClick={onClose}
-                className={navClass}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{link.name}</span>
-              </NavLink>
-            );
-          })}
-
-          <div className="pt-2 px-3 flex items-center justify-between text-[11px] text-beige-600 dark:text-gray-500 font-medium">
-            <span>HackMate v1.0.0</span>
+          <div className="pt-2 px-2 flex items-center justify-between text-[10px] text-gray-400 font-medium">
+            <span>HackMate v1.2</span>
             <span className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Online</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">Live Connected</span>
             </span>
           </div>
         </div>

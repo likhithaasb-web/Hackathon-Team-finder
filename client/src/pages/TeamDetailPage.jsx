@@ -297,6 +297,33 @@ export default function TeamDetailPage() {
           </div>
         </div>
 
+        {/* Team Capacity & Metadata Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-gray-50/70 dark:bg-dark-surface/60 border border-gray-100 dark:border-dark-border">
+          <div>
+            <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+              <span className="text-gray-500 dark:text-gray-400">Team Capacity</span>
+              <span className="font-bold text-gray-900 dark:text-white">
+                {team.members?.length || 1} / {team.desiredSize} Members ({team.desiredSize - (team.members?.length || 1)} spots open)
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-dark-card h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-brand-600 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, (((team.members?.length || 1) / (team.desiredSize || 4)) * 100))}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between sm:justify-end space-x-3 text-xs">
+            <span className="px-3 py-1 rounded-xl font-semibold bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-700 dark:text-gray-300">
+              📍 {team.collaborationMode || 'Remote'}
+            </span>
+            <span className="px-3 py-1 rounded-xl font-semibold bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-700 dark:text-gray-300">
+              ⚡ {team.availabilityRequirements || 'Flexible Availability'}
+            </span>
+          </div>
+        </div>
+
         {/* Shareable Invite Code banner */}
         <div className="p-3 bg-gray-50 dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
           <div className="flex items-center space-x-2">
@@ -314,7 +341,7 @@ export default function TeamDetailPage() {
           </button>
         </div>
 
-        {/* Overview & Problem Statement */}
+        {/* Overview & Problem Statement & Skills */}
         <div className="space-y-3 pt-2">
           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             {team.description}
@@ -327,6 +354,21 @@ export default function TeamDetailPage() {
               <p className="text-xs text-gray-700 dark:text-gray-300">
                 {team.problemStatement}
               </p>
+            </div>
+          )}
+
+          {team.requiredSkills?.length > 0 && (
+            <div className="pt-2">
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 block mb-1.5">
+                Target Technologies & Stack:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {team.requiredSkills.map((sk, idx) => (
+                  <span key={idx} className="badge-skill text-xs">
+                    {sk}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>

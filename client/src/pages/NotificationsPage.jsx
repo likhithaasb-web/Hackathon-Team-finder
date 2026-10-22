@@ -21,7 +21,7 @@ export default function NotificationsPage() {
 
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all' | 'unread'
+  const [filter, setFilter] = useState('all'); // 'all' | 'unread' | 'teams' | 'connections'
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -70,7 +70,25 @@ export default function NotificationsPage() {
     }
   };
 
-  const filtered = notifications.filter(n => (filter === 'unread' ? !n.isRead : true));
+  const filtered = notifications.filter((n) => {
+    if (filter === 'unread') return !n.isRead;
+    if (filter === 'teams') return n.type?.includes('team') || n.type?.includes('application');
+    if (filter === 'connections') return n.type?.includes('request') || n.type?.includes('connection');
+    return true;
+  });
+
+  const getNotificationIcon = (type) => {
+    if (type?.includes('team') || type?.includes('application')) {
+      return <FolderGit2 className="w-5 h-5 text-brand-700 dark:text-brand-300" />;
+    }
+    if (type?.includes('request') || type?.includes('connection')) {
+      return <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />;
+    }
+    if (type?.includes('message')) {
+      return <MessageSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+    }
+    return <Bell className="w-5 h-5 text-amber-500" />;
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -78,7 +96,7 @@ export default function NotificationsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center space-x-2">
             <span>Notifications Hub</span>
-            <Bell className="w-5 h-5 text-brand-500" />
+            <Bell className="w-5 h-5 text-brand-600 dark:text-brand-400" />
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
             Real-time updates on team invitations, connection requests, and deadline reminders.
@@ -87,18 +105,8 @@ export default function NotificationsPage() {
 
         <div className="flex items-center space-x-2 self-start sm:self-auto">
           <button
-            onClick={() => setFilter(filter === 'all' ? 'unread' : 'all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-              filter === 'unread'
-                ? 'bg-brand-600 text-white'
-                : 'bg-gray-100 dark:bg-dark-card text-gray-700 dark:text-gray-300'
-            }`}
-          >
-            {filter === 'unread' ? 'Showing Unread' : 'Filter: Unread'}
-          </button>
-          <button
             onClick={handleMarkAll}
-            className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 hover:bg-brand-100 transition-colors"
+            className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-brand-700 dark:text-brand-300 bg-beige-100 dark:bg-brand-950/60 hover:bg-beige-200 transition-colors border border-beige-300 dark:border-brand-900/40"
           >
             <Check className="w-3.5 h-3.5" />
             <span>Mark all read</span>
@@ -106,9 +114,31 @@ export default function NotificationsPage() {
         </div>
       </div>
 
+      {/* Category Filter Pills */}
+      <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-dark-border pb-3">
+        {[
+          { key: 'all', label: `All (${notifications.length})` },
+          { key: 'unread', label: `Unread (${notifications.filter(n => !n.isRead).length})` },
+          { key: 'teams', label: 'Teams & Invites' },
+          { key: 'connections', label: 'Teammate Requests' },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              filter === tab.key
+                ? 'bg-brand-700 text-white shadow-royal'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-beige-100 dark:hover:bg-dark-surface'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="space-y-3 animate-pulse">
-          {[1, 2, 3, 4].map(n => (
+          {[1, 2, 3, 4].map((n) => (
             <div key={n} className="h-20 rounded-2xl bg-gray-200 dark:bg-dark-card" />
           ))}
         </div>
@@ -116,7 +146,11 @@ export default function NotificationsPage() {
         <EmptyState
           icon={Bell}
           title="No notifications to show"
-          description={filter === 'unread' ? 'All your notifications are marked read.' : 'You have no recent notifications.'}
+          description={
+            filter === 'unread'
+              ? 'All your notifications are marked read.'
+              : 'You have no recent notifications in this category.'
+          }
         />
       ) : (
         <div className="space-y-3">
@@ -124,19 +158,24 @@ export default function NotificationsPage() {
             <div
               key={n._id}
               onClick={() => handleNotificationClick(n)}
-              className={`p-4 rounded-2xl glass-card flex items-start justify-between cursor-pointer group hover:border-brand-500/50 transition-all ${
-                !n.isRead ? 'bg-brand-50/40 dark:bg-brand-950/20 border-l-4 border-l-brand-600' : ''
+              className={`p-4 rounded-2xl glass-card flex items-start justify-between cursor-pointer group hover:border-brand-500/50 hover:shadow-sm transition-all ${
+                !n.isRead ? 'bg-beige-50/80 dark:bg-brand-950/30 border-l-4 border-l-brand-700' : ''
               }`}
             >
               <div className="flex items-start space-x-3.5">
-                <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
-                  <Bell className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-beige-100 dark:bg-dark-surface border border-beige-200 dark:border-dark-border flex items-center justify-center shrink-0">
+                  {getNotificationIcon(n.type)}
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">
-                    {n.title}
-                  </h4>
-                  <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                      {n.title}
+                    </h4>
+                    {!n.isRead && (
+                      <span className="w-2 h-2 rounded-full bg-brand-600 animate-pulse" />
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-relaxed">
                     {n.message}
                   </p>
                   <span className="text-[10px] text-gray-400 block mt-1">

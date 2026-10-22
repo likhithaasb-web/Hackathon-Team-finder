@@ -29,6 +29,7 @@ import {
 import ReportModal from '../components/ReportModal.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import Modal from '../components/Modal.jsx';
+import { TeammateCardSkeleton } from '../components/Skeleton.jsx';
 
 const ROLES = [
   'All Roles',
@@ -231,6 +232,27 @@ export default function DiscoverTeammatesPage() {
 
       {/* Filter and Search Bar Panel */}
       <div className="p-4 sm:p-5 rounded-2xl glass-card space-y-4">
+        {/* Quick Role Filter Pills */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-thin">
+          {ROLES.slice(0, 9).map((r) => {
+            const isSelected = (r === 'All Roles' && (role === 'all' || role === 'All Roles')) || role === r;
+            return (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRole(r === 'All Roles' ? 'all' : r)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
+                  isSelected
+                    ? 'bg-brand-700 text-white border-brand-700 shadow-royal'
+                    : 'bg-beige-50/70 dark:bg-dark-surface text-gray-700 dark:text-gray-300 border-beige-300/80 dark:border-dark-border hover:border-brand-500/40'
+                }`}
+              >
+                {r}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -322,7 +344,7 @@ export default function DiscoverTeammatesPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((n) => (
-            <div key={n} className="h-80 rounded-2xl bg-gray-200 dark:bg-dark-card animate-pulse" />
+            <TeammateCardSkeleton key={n} />
           ))}
         </div>
       ) : users.length === 0 ? (
@@ -448,16 +470,40 @@ export default function DiscoverTeammatesPage() {
                     )}
                   </div>
 
-                  {/* Metadata Row: Availability & Location */}
+                  {/* Metadata Row: Availability & Location & Socials */}
                   <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-3 pt-2 border-t border-gray-100 dark:border-dark-border">
                     <span className="flex items-center space-x-1">
                       <Clock className="w-3 h-3 text-gray-400" />
                       <span>{candidate.availability || 'Flexible'}</span>
                     </span>
-                    <span className="flex items-center space-x-1">
-                      <MapPin className="w-3 h-3 text-gray-400" />
-                      <span className="truncate max-w-[120px]">{candidate.location || 'Remote'}</span>
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      {candidate.githubUrl && (
+                        <a
+                          href={candidate.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                          title="GitHub Profile"
+                        >
+                          <Github className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      {candidate.linkedinUrl && (
+                        <a
+                          href={candidate.linkedinUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-gray-400 hover:text-blue-500 transition-colors"
+                          title="LinkedIn Profile"
+                        >
+                          <Linkedin className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <span className="flex items-center space-x-1">
+                        <MapPin className="w-3 h-3 text-gray-400" />
+                        <span className="truncate max-w-[100px]">{candidate.location || 'Remote'}</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
 

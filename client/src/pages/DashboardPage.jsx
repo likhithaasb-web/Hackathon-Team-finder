@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useSocket } from '../context/SocketContext.jsx';
 import apiClient from '../api/client.js';
+import toast from 'react-hot-toast';
 import {
   Users,
   Calendar,
@@ -12,6 +13,8 @@ import {
   ArrowRight,
   Clock,
   CheckCircle2,
+  Check,
+  X,
   MessageSquare,
   AlertCircle,
   ExternalLink,
@@ -26,6 +29,7 @@ import {
   Tooltip,
 } from 'recharts';
 import EmptyState from '../components/EmptyState.jsx';
+import { TeammateCardSkeleton, TeamCardSkeleton, HackathonCardSkeleton } from '../components/Skeleton.jsx';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -38,6 +42,41 @@ export default function DashboardPage() {
   const [invitations, setInvitations] = useState([]);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [conversations, setConversations] = useState([]);
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const handleRespondInvitation = async (invId, action) => {
+    try {
+      const res = await apiClient.put(`/teams/invitations/${invId}`, { action });
+      if (res.data?.success) {
+        toast.success(action === 'accept' ? 'Joined team successfully! 🎉' : 'Invitation declined.');
+        setInvitations(prev => prev.filter(i => i._id !== invId));
+        if (action === 'accept') {
+          const teamsRes = await apiClient.get('/teams/my-teams');
+          if (teamsRes.data?.success) setMyTeams(teamsRes.data.teams || []);
+        }
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update invitation.');
+    }
+  };
+
+  const handleRespondRequest = async (reqId, action) => {
+    try {
+      const res = await apiClient.put(`/connections/requests/${reqId}`, { action });
+      if (res.data?.success) {
+        toast.success(action === 'accept' ? 'Connected with teammate! 🤝' : 'Request declined.');
+        setIncomingRequests(prev => prev.filter(r => r._id !== reqId));
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update request.');
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -81,47 +120,76 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* 1. Welcome Header Banner & Profile Completion */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 text-white shadow-royal border border-brand-700/40 relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-900 text-white shadow-royal border border-brand-700/40 relative overflow-hidden">
         {/* Glow ambient background circles with Royal Blue and warm Beige */}
         <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-500/20 blur-3xl rounded-full pointer-events-none" />
         <div className="absolute -bottom-12 left-1/3 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div>
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-beige-100/20 text-beige-100 border border-beige-200/30 backdrop-blur-md mb-2 shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Ready for the next hackathon</span>
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Welcome back, {user?.fullName}! 👋
+              {getGreeting()}, {user?.fullName || 'Innovator'}! 👋
             </h1>
             <p className="text-xs sm:text-sm text-beige-200/90 mt-1 max-w-xl">
-              {user?.roleTitle} • {user?.college || user?.location || 'HackMate Innovator'}
+              {user?.roleTitle || 'Developer'} • {user?.college || user?.location || 'HackMate Innovator'}
             </p>
           </div>
 
-          {/* Profile Completeness Box */}
-          <div className="p-4 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15 min-w-[240px]">
+          {/* Profile Completeness Box with Interactive Checklist */}
+          <div className="p-4 rounded-2xl bg-black/25 backdrop-blur-md border border-white/15 min-w-[260px] sm:max-w-xs w-full">
             <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-medium text-beige-200">Profile Completeness</span>
-              <span className="font-bold text-white text-sm">
+              <span className="font-semibold text-beige-200">Profile Completeness</span>
+              <span className="font-extrabold text-white text-sm">
                 {user?.profileCompleteness || 60}%
               </span>
             </div>
-            <div className="w-full bg-black/30 h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-black/40 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-amber-400 h-2 rounded-full transition-all duration-500 shadow-sm"
+                className="bg-gradient-to-r from-amber-400 to-amber-300 h-2 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${user?.profileCompleteness || 60}%` }}
               />
             </div>
-            {user?.profileCompleteness < 100 && (
+
+            {/* Checklist Micro-Pills */}
+            <div className="flex flex-wrap gap-1.5 mt-3 pt-2.5 border-t border-white/10 text-[10px]">
               <Link
                 to="/profile/edit"
-                className="text-[11px] text-beige-200 hover:text-white hover:underline block mt-2 text-right font-medium"
+                className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full border transition-colors ${
+                  user?.bio
+                    ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30'
+                    : 'bg-white/10 text-beige-200 border-white/15 hover:bg-white/20'
+                }`}
               >
-                Add projects & skills to reach 100% →
+                {user?.bio ? <Check className="w-2.5 h-2.5" /> : <span>+</span>}
+                <span>Bio</span>
               </Link>
-            )}
+              <Link
+                to="/profile/edit"
+                className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full border transition-colors ${
+                  (user?.skills?.length || 0) >= 3
+                    ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30'
+                    : 'bg-white/10 text-beige-200 border-white/15 hover:bg-white/20'
+                }`}
+              >
+                {(user?.skills?.length || 0) >= 3 ? <Check className="w-2.5 h-2.5" /> : <span>+</span>}
+                <span>Skills ({(user?.skills?.length || 0)}/3)</span>
+              </Link>
+              <Link
+                to="/profile/edit"
+                className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full border transition-colors ${
+                  user?.githubUrl
+                    ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30'
+                    : 'bg-white/10 text-beige-200 border-white/15 hover:bg-white/20'
+                }`}
+              >
+                {user?.githubUrl ? <Check className="w-2.5 h-2.5" /> : <span>+</span>}
+                <span>GitHub</span>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -155,50 +223,98 @@ export default function DashboardPage() {
       {(invitations.length > 0 || incomingRequests.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {invitations.length > 0 && (
-            <div className="p-4 rounded-2xl bg-beige-100/80 dark:bg-brand-950/40 border border-beige-300 dark:border-brand-800/60 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-royal">
-                  <FolderGit2 className="w-5 h-5" />
+            <div className="p-4 rounded-2xl bg-beige-100/80 dark:bg-brand-950/40 border border-beige-300 dark:border-brand-800/60 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-royal">
+                    <FolderGit2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-900 dark:text-white">
+                      {invitations.length} Team Invitation{invitations.length > 1 ? 's' : ''}
+                    </h4>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                      Placement offer: <strong>{invitations[0]?.team?.name}</strong>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                    {invitations.length} Team Invitation{invitations.length > 1 ? 's' : ''} Received
-                  </h4>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                    Review and accept team placement
-                  </p>
+                <Link
+                  to="/teams/my-teams"
+                  className="text-[11px] font-semibold text-brand-700 dark:text-brand-300 hover:underline"
+                >
+                  View All ({invitations.length})
+                </Link>
+              </div>
+
+              {/* Top Invitation Inline Action */}
+              <div className="pt-2 border-t border-beige-200 dark:border-brand-900/40 flex items-center justify-between text-xs">
+                <span className="text-[11px] text-gray-600 dark:text-gray-300">
+                  Role: <span className="font-semibold">{invitations[0]?.position || 'Member'}</span>
+                </span>
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={() => handleRespondInvitation(invitations[0]._id, 'reject')}
+                    className="px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-beige-200 dark:hover:bg-brand-900/60 transition-colors"
+                  >
+                    Decline
+                  </button>
+                  <button
+                    onClick={() => handleRespondInvitation(invitations[0]._id, 'accept')}
+                    className="inline-flex items-center space-x-1 px-3 py-1 rounded-lg text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-royal transition-all"
+                  >
+                    <Check className="w-3 h-3" />
+                    <span>Accept</span>
+                  </button>
                 </div>
               </div>
-              <Link
-                to="/teams/my-teams"
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-brand-900 dark:text-brand-200 bg-white dark:bg-dark-surface border border-beige-300 dark:border-brand-800 hover:bg-beige-50 transition-colors shadow-sm"
-              >
-                View Invites
-              </Link>
             </div>
           )}
 
           {incomingRequests.length > 0 && (
-            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
-                  <Users className="w-5 h-5" />
+            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-900 dark:text-white">
+                      {incomingRequests.length} Teammate Request{incomingRequests.length > 1 ? 's' : ''}
+                    </h4>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                      From <strong>{incomingRequests[0]?.requester?.fullName}</strong>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                    {incomingRequests.length} Teammate Request{incomingRequests.length > 1 ? 's' : ''}
-                  </h4>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                    Peers waiting to connect with you
-                  </p>
+                <Link
+                  to="/connections"
+                  className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 hover:underline"
+                >
+                  View All ({incomingRequests.length})
+                </Link>
+              </div>
+
+              {/* Top Request Inline Action */}
+              <div className="pt-2 border-t border-amber-200 dark:border-amber-900/40 flex items-center justify-between text-xs">
+                <span className="text-[11px] text-gray-600 dark:text-gray-300 truncate max-w-[160px]">
+                  {incomingRequests[0]?.requester?.roleTitle || 'Developer'}
+                </span>
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={() => handleRespondRequest(incomingRequests[0]._id, 'reject')}
+                    className="px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+                  >
+                    Decline
+                  </button>
+                  <button
+                    onClick={() => handleRespondRequest(incomingRequests[0]._id, 'accept')}
+                    className="inline-flex items-center space-x-1 px-3 py-1 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm transition-all"
+                  >
+                    <Check className="w-3 h-3" />
+                    <span>Connect</span>
+                  </button>
                 </div>
               </div>
-              <Link
-                to="/connections"
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/60 hover:bg-amber-200 transition-colors"
-              >
-                Review Requests
-              </Link>
             </div>
           )}
         </div>
@@ -229,7 +345,12 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            {recommendations.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <TeammateCardSkeleton />
+                <TeammateCardSkeleton />
+              </div>
+            ) : recommendations.length === 0 ? (
               <EmptyState
                 icon={Users}
                 title="No recommendations yet"
@@ -321,7 +442,12 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            {myTeams.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <TeamCardSkeleton />
+                <TeamCardSkeleton />
+              </div>
+            ) : myTeams.length === 0 ? (
               <EmptyState
                 icon={FolderGit2}
                 title="You haven't joined any teams yet"

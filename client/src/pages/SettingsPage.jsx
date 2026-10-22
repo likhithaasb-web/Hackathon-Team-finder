@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useTheme } from '../context/ThemeContext.jsx';
 import apiClient from '../api/client.js';
 import toast from 'react-hot-toast';
 import {
@@ -10,10 +11,13 @@ import {
   Trash2,
   Shield,
   Save,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user, updateProfile, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const [notificationPreferences, setNotificationPreferences] = useState({
     email: user?.notificationPreferences?.email !== undefined ? user.notificationPreferences.email : true,
@@ -99,6 +103,57 @@ export default function SettingsPage() {
       </div>
 
       <form onSubmit={handleSavePreferences} className="space-y-6">
+        {/* Appearance & Theme Preferences */}
+        <div className="p-6 rounded-2xl glass-card space-y-4">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center space-x-2 pb-2 border-b border-gray-100 dark:border-dark-border">
+            <Sun className="w-4 h-4 text-amber-500" />
+            <span>Appearance & Theme</span>
+          </h3>
+
+          <div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+              Choose your preferred interface theme. HackMate supports deep navy Linear-inspired dark mode and crisp high-contrast light mode.
+            </p>
+            <div className="grid grid-cols-2 gap-3 max-w-md">
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                className={`p-3.5 rounded-xl border text-left flex items-center space-x-3 transition-all ${
+                  theme === 'dark'
+                    ? 'border-brand-600 bg-brand-950/40 ring-2 ring-brand-600/30'
+                    : 'border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface hover:border-gray-300'
+                }`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-navy-950 text-brand-400 flex items-center justify-center border border-navy-800 shrink-0">
+                  <Moon className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-900 dark:text-white">Dark Theme</p>
+                  <p className="text-[10px] text-gray-400">Deep navy & violet</p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                className={`p-3.5 rounded-xl border text-left flex items-center space-x-3 transition-all ${
+                  theme === 'light'
+                    ? 'border-brand-600 bg-beige-100/70 ring-2 ring-brand-600/30'
+                    : 'border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface hover:border-gray-300'
+                }`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shrink-0">
+                  <Sun className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-900 dark:text-white">Light Theme</p>
+                  <p className="text-[10px] text-gray-500">Soft linen & ivory</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Privacy & Visibility */}
         <div className="p-6 rounded-2xl glass-card space-y-4">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center space-x-2 pb-2 border-b border-gray-100 dark:border-dark-border">

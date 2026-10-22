@@ -15,9 +15,11 @@ import {
   Users,
 } from 'lucide-react';
 import EmptyState from '../components/EmptyState.jsx';
+import { HackathonCardSkeleton } from '../components/Skeleton.jsx';
 
 const FORMATS = ['All Formats', 'Online', 'In-person', 'Hybrid'];
 const STATUSES = ['All Statuses', 'upcoming', 'ongoing', 'completed'];
+const THEMES = ['All Themes', 'AI', 'Web3', 'Sustainability', 'FinTech', 'Open Innovation'];
 
 export default function HackathonsPage() {
   const [hackathons, setHackathons] = useState([]);
@@ -27,6 +29,17 @@ export default function HackathonsPage() {
   const [status, setStatus] = useState('All Statuses');
   const [theme, setTheme] = useState('All Themes');
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
+
+  const getDaysRemaining = (deadline) => {
+    if (!deadline) return null;
+    const diffMs = new Date(deadline) - new Date();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { label: 'Closed', urgent: false };
+    if (diffDays === 0) return { label: 'Closes today!', urgent: true };
+    if (diffDays === 1) return { label: '1 day left', urgent: true };
+    if (diffDays <= 3) return { label: `${diffDays} days left`, urgent: true };
+    return { label: `${diffDays} days left`, urgent: false };
+  };
 
   const fetchHackathons = async () => {
     setLoading(true);
@@ -101,6 +114,27 @@ export default function HackathonsPage() {
 
       {/* Filter & Search Bar */}
       <div className="p-4 rounded-2xl glass-card space-y-3">
+        {/* Quick Domain Filter Pills */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-thin">
+          {THEMES.map((t) => {
+            const isSelected = theme === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTheme(t)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
+                  isSelected
+                    ? 'bg-brand-700 text-white border-brand-700 shadow-royal'
+                    : 'bg-beige-50/70 dark:bg-dark-surface text-gray-700 dark:text-gray-300 border-beige-300/80 dark:border-dark-border hover:border-brand-500/40'
+                }`}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+
         <form onSubmit={handleSearch} className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -177,7 +211,7 @@ export default function HackathonsPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="h-72 rounded-2xl bg-gray-200 dark:bg-dark-card animate-pulse" />
+            <HackathonCardSkeleton key={n} />
           ))}
         </div>
       ) : hackathons.length === 0 ? (
@@ -189,7 +223,7 @@ export default function HackathonsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {hackathons.map((h) => {
-            const isDeadlineClose = new Date(h.registrationDeadline) - new Date() < 3 * 24 * 60 * 60 * 1000;
+            const countdown = getDaysRemaining(h.registrationDeadline);
 
             return (
               <div
@@ -207,9 +241,16 @@ export default function HackathonsPage() {
                       <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-black/60 backdrop-blur-md text-white border border-white/20">
                         {h.format}
                       </span>
-                      {isDeadlineClose && (
-                        <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-red-600 text-white animate-pulse">
-                          Closes Soon!
+                      {countdown && (
+                        <span
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
+                            countdown.urgent
+                              ? 'bg-red-600 text-white animate-pulse'
+                              : 'bg-black/60 backdrop-blur-md text-beige-200 border border-white/20'
+                          }`}
+                        >
+                          <Clock className="w-3 h-3 inline mr-1" />
+                          {countdown.label}
                         </span>
                       )}
                     </div>

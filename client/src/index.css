@@ -51,6 +51,10 @@
   @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800/60;
 }
 
-.badge-beige {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-beige-100 text-beige-800 dark:bg-dark-card dark:text-dark-beige border border-beige-300/90 dark:border-dark-border;
+.badge-violet {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-violet-50 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300 border border-violet-200 dark:border-violet-800/60;
+}
+
+.gradient-violet {
+  @apply bg-gradient-to-r from-violet-600 via-indigo-600 to-brand-600;
 }
