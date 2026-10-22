@@ -45,7 +45,9 @@ export default function LoginPage() {
     setErrorCode('');
 
     if (provider === 'google') {
-      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      const googleClientId =
+        import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+        '904718276042-c385ilns6gca737pr0u2f7o37m7a4sk7.apps.googleusercontent.com';
 
       // If GIS library is loaded and client ID exists, trigger Google OAuth Popup
       if (window.google?.accounts?.oauth2 && googleClientId) {
